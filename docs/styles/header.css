@@ -1,0 +1,32 @@
+.header{
+    width: 100vw; 
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    box-shadow: 0 4px 8px 0 var(--marronRgba);
+    background-color: var(--white);
+}
+
+.header__logo{
+    width: 20%;
+    height: auto;
+    cursor: pointer
+}
+
+.menu__button{
+    display: inline-block;
+    font-size: 25px;
+    position: relative;
+    cursor: pointer;
+}
+
+
+
+/*Desktop*/
+.menu__options{
+    display: none;
+}

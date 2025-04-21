@@ -1,0 +1,42 @@
+.cards{
+    width: 80%;
+    margin: 60px auto;
+}
+
+.cards__container{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+}
+
+.card__juego{
+    display: inline-block;
+    border-radius: 5px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px 0 var(--border);
+}
+.juego__img{
+    width: 100%;
+    height: 200px;
+    object-position: center;
+    object-fit: cover;
+    box-shadow: 0 0px 2px 0 var(--border);
+    border-radius: 5px;
+}
+
+.container__juego--info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+.juego__name{
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 10px 0px;
+}
+.juego__plataformas, .juego__lanzamiento, .juego__rating, .juego__generos{
+    font-size: 14px;
+    margin: 4px 0px;
+}

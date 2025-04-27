@@ -14,9 +14,11 @@ const buscarJuego = (nombre) => {
     .then((data) => {
       const result = data.results;
       console.log(result);
+      pintarCards(result);
     });
 };
 
+//Lee lo escrito por el usuario en el buscador
 const leerProducto = () => {
   impupSearch.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -24,7 +26,65 @@ const leerProducto = () => {
       .querySelector(".search__form--input")
       .value.trim();
     buscarJuego(juegoSearch);
-
+    history.pushState(
+      { tipo: "busqueda", query: juegoSearch },
+      "",
+      `?q=${encodeURIComponent(juegoSearch)}`
+    );
+    // Guarda un estado cada vez q se hace una búsqueda
+    document.querySelector(
+      ".cards__title"
+    ).textContent = `Resultados para: ${juegoSearch}`;
     impupSearch.reset();
   });
 };
+
+//Pintar las cards con la información de los juegos según lo que se buscó
+const pintarCards = (data) => {
+  if (data.length === 0) {
+    listadoTarjetas.innerHTML =
+      "<p>No se encontraron juegos con ese nombre.</p>";
+    return;
+  }
+  listadoTarjetas.innerHTML = "";
+  data.forEach((juego) => {
+    const clone = cardTemplate.cloneNode(true);
+
+    clone.querySelector(".juego__img").src = juego.background_image; //Agregar una imagen por si no trae algo
+    clone.querySelector(".juego__img").alt = juego.name;
+    clone.querySelector(".juego__name").textContent = juego.name;
+    const plataformas = Array.isArray(juego.platforms) //Chequeo antes si tiene un array de plataformas porque sino tira error
+      ? juego.platforms
+          .filter((p) => p.platform && p.platform.name)
+          .map((p) => p.platform.name)
+          .join(", ")
+      : "Plataformas no disponibles";
+    const lanzamiento = juego.released ? juego.released : "-";
+    clone.querySelector(
+      ".juego__lanzamiento"
+    ).textContent = `Lanzado: ${lanzamiento}`;
+    clone.querySelector(".juego__rating").textContent = `⭐ ${juego.rating}`;
+    clone.querySelector(".juego__generos").textContent = juego.genres
+      .map((g) => g.name)
+      .join(", ");
+
+    fragment.appendChild(clone);
+  });
+  listadoTarjetas.appendChild(fragment);
+};
+
+window.addEventListener("popstate", (event) => {
+  if (!event.state) {
+    // Si no hay estado guardado, volvemos al inicio (juegos populares)
+    listadoTarjetas.innerHTML = "";
+    document.querySelector(".cards h3").textContent = "Juegos más populares";
+    listarJuegosPopulares();
+  } else if (event.state.tipo === "busqueda" && event.state.query) {
+    // Si volvemos a un estado de búsqueda, hacemos la búsqueda de nuevo
+    listadoTarjetas.innerHTML = "";
+    document.querySelector(
+      ".cards h3"
+    ).textContent = `Resultados para: ${event.state.query}`;
+    buscarJuego(event.state.query);
+  }
+});

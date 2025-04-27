@@ -2,7 +2,7 @@ const cardTemplate = document.getElementById("card__template").content;
 const fragment = document.createDocumentFragment();
 const listadoTarjetas = document.querySelector(".cards__container"); //Div donde se ubicarán las tarjetas
 
-//cuando carga el html se ejecutará el pedido al .json
+//cuando carga el html se ejecutará el pedido a la API
 document.addEventListener("DOMContentLoaded", () => {
   listarJuegosPopulares();
   leerProducto();

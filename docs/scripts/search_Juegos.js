@@ -1,16 +1,31 @@
 const API_KEY = "4b1742eb29634e329d7fd29447d706ca";
 const impupSearch = document.querySelector(".search__form");
+const selectOrden = document.getElementById("ordenar-select");
+
+//Escuchar el click en el select para ordenal los juegos según un criterio
+selectOrden.addEventListener("change", () => {
+  const estadoActual = history.state;
+  if (estadoActual && estadoActual.tipo === "busqueda" && estadoActual.query) {
+    listadoTarjetas.innerHTML = "";
+    buscarJuego(estadoActual.query, selectOrden.value);
+  }
+});
 
 //Conectar a la api de búsqueda
-const buscarJuego = (nombre) => {
+const buscarJuego = (nombre, orden = "relevancia") => {
+  let ordering = "";
+
+  if (orden === "rating_desc") ordering = "-rating";
+  else if (orden === "rating_asc") ordering = "rating";
+  else if (orden === "fecha_desc") ordering = "-released";
+  else if (orden === "fecha_asc") ordering = "released";
+
   fetch(
     `https://api.rawg.io/api/games?key=${API_KEY}&search=${encodeURIComponent(
       nombre
-    )}`
+    )}${ordering ? `&ordering=${ordering}` : ""}`
   )
-    .then((res) => {
-      return res.json();
-    })
+    .then((res) => res.json())
     .then((data) => {
       const result = data.results;
       console.log(result);
@@ -18,14 +33,14 @@ const buscarJuego = (nombre) => {
     });
 };
 
-//Lee lo escrito por el usuario en el buscador
-const leerProducto = () => {
+//Leer lo escrito en el buscador
+const leerJuego = () => {
   impupSearch.addEventListener("submit", (e) => {
     e.preventDefault();
     const juegoSearch = document
       .querySelector(".search__form--input")
       .value.trim();
-    buscarJuego(juegoSearch);
+    buscarJuego(juegoSearch, selectOrden.value);
     history.pushState(
       { tipo: "busqueda", query: juegoSearch },
       "",
@@ -43,7 +58,7 @@ const leerProducto = () => {
 const pintarCards = (data) => {
   if (data.length === 0) {
     listadoTarjetas.innerHTML =
-      "<p>No se encontraron juegos con ese nombre.</p>";
+      "<p>No se encontraron juegos con ese nombre</p>";
     return;
   }
   listadoTarjetas.innerHTML = "";
@@ -53,7 +68,7 @@ const pintarCards = (data) => {
     clone.querySelector(".juego__img").src = juego.background_image; //Agregar una imagen por si no trae algo
     clone.querySelector(".juego__img").alt = juego.name;
     clone.querySelector(".juego__name").textContent = juego.name;
-    const plataformas = Array.isArray(juego.platforms) //Chequeo antes si tiene un array de plataformas porque sino tira error
+    const plataformas = Array.isArray(juego.platforms) //Chequar antes si tiene un array de plataformas porque sino tira error
       ? juego.platforms
           .filter((p) => p.platform && p.platform.name)
           .map((p) => p.platform.name)

@@ -38,11 +38,23 @@
                   </button>
                 </div>
               </form>
+              <!--Select para ordenar los juegos-->
+              <div class="search__ordenar-container">
+                <label for="ordenar-select">Ordenar por:</label>
+                <select id="ordenar-select" class="ordenar__select">
+                  <option value="relevancia" selected>Relevancia</option>
+                  <option value="rating_desc">Mejor puntuados</option>
+                  <option value="rating_asc">Peor puntuados</option>
+                  <option value="fecha_desc">Más recientes</option>
+                  <option value="fecha_asc">Más antiguos</option>
+                </select>
+              </div>
+              
         </section>
         
         <!--Cards con los juegos--> 
         <section class="cards">
-            <h3>Juegos mas populares</h3>
+            <h3 class="cards__title">Juegos mas populares</h3>
             <div class="cards__container">
                 <!--Va el CARD__TEMPLATE-->
             </div>

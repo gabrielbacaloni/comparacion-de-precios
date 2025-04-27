@@ -44,4 +44,15 @@
     justify-content: center;
   }
 
- 
+ /*Select con opciones*/
+ .search__ordenar-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+#ordenar-select{
+    margin: 10px;
+    text-align: center;
+    padding: 3px;
+    font-size: 1rem;
+}

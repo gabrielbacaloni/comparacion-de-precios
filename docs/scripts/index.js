@@ -5,7 +5,7 @@ const listadoTarjetas = document.querySelector(".cards__container"); //Div donde
 //cuando carga el html se ejecutará el pedido a la API
 document.addEventListener("DOMContentLoaded", () => {
   listarJuegosPopulares();
-  leerProducto();
+  leerJuego();
 });
 
 /*Llamada a la api para traer los juegos populares */

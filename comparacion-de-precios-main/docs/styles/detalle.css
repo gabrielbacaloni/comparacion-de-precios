@@ -1,0 +1,66 @@
+.main-detalle {
+    margin: 160px auto;
+    width: 80%;
+}
+
+.detalle-juego {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-bottom: 40px;
+    align-items: flex-start;
+}
+
+.detalle-juego__imagen {
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.detalle-juego__info {
+    flex: 1;
+}
+
+#nombre-juego {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+#descripcion-juego {
+    font-size: 1.2em;
+    color: #555;
+}
+
+.detalle-ofertas h2 {
+    margin-top: 40px;
+}
+
+#ofertas {
+    margin-top: 20px;
+}
+
+.oferta {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--background);
+    box-shadow: 0 4px 8px 0 var(--marronRgba);
+}
+
+.oferta__tienda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.oferta__logo {
+    width: 50px;
+    height: auto;
+}
+
+.oferta__link {
+    color: blue;
+    text-decoration: underline;
+    font-weight: bold;
+}

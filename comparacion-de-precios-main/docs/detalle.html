@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle del juego</title>
+  <link rel="stylesheet" href="./styles/main.css">
+  <link rel="stylesheet" href="./styles/header.css">
+  <link rel="stylesheet" href="./styles/inicio/index_desktop.css">
+  <link rel="stylesheet" href="./styles/detalle.css">
+
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header class="header">
+    <img src="./assets/logo-ggprice.png" alt="GG PRICE logo" class="header__logo">
+    <i class="fas fa-bars menu__button" id="menu-button"></i>
+    <ul class="menu__options" id="menu-options">
+      <li class="menu__options--item">Iniciar sesión</li>
+      <li class="menu__options--item">Registrarse</li>
+    </ul>
+  </header>
+
+  <!-- Detalle del juego -->
+  <main class="main-detalle">
+    <section class="detalle-juego">
+      <img id="imagen-juego" src="" alt="Imagen del juego" class="detalle-juego__imagen">
+      <div class="detalle-juego__info">
+        <h1 id="nombre-juego">Juego</h1>
+        <p id="descripcion-juego">Cargando descripción...</p>
+      </div>
+    </section>
+
+    <section class="detalle-ofertas">
+      <h2>Ofertas disponibles</h2>
+      <div id="ofertas"></div>
+    </section>
+  </main>
+
+  <script src="./scripts/detalle.js"></script>
+</body>
+</html>
+
+

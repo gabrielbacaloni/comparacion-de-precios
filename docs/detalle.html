@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GG Price</title>
+    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/inicio/index_desktop.css">
+    <link rel="stylesheet" href="./styles/detalle/detalle.css">
+    <link rel="stylesheet" href="./styles/detalle/detalle-desktop.css">
+    <link rel="stylesheet" href="./styles/cambioModo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+     <!--Encabezado--> 
+    <header class="header">
+        <img src="./assets/logo-ggprice.png" alt="GG PRICE logo" class="header__logo">
+        <i  class= "fas fa-bars menu__button" id="menu-button"></i>
+
+        <ul class="menu__options" id="menu-options">
+            <li class="menu__options--item">Iniciar sesión</li>
+            <li class="menu__options--item">Registrarse</li>
+        </ul>
+    </header>
+     <!--Cuerpo de la página--> 
+    <main class="detalle__juego">
+        <!--Detalles del juego--> 
+        <section class="detalle__juego--container">
+            <div class="juego__container--datos">
+                <img class="juego__imagen" alt="Imagen del juego" />
+                <div class="juego__container--informacion">
+                    <h1 class="juego__titulo"></h1>
+                    <p class="juego__text" >Lanazamiento: <span class="juego__fecha"></span ></p> 
+                    <p class="juego__text">Plataformas: <span class="juego__plataformas"></span></p>
+                </div>
+            </div>
+            <div class="juego__container--detalles">
+                <h2 class="juego__title--descripcion">Descripción</h2>
+                <p class="juego__descripcion--text"></p>
+            </div>
+        </section>
+         <!-- Llistado de precios -->
+        <section class="precios__container">
+            <h2 class="precios__titulo"></h2>
+            <div class="precios__lista">
+              <!-- Template para los precios-->
+            </div>
+          </section>
+          
+          <template id="template-precio">
+            <div class="precio__card">
+              <p class="precio__tienda"></p>
+              <p class="precio__valor"></p>
+              <a class="precio__boton" href="#" target="_blank">Comprar</a>
+            </div>
+          </template>
+          
+      </main>
+      <script src="./scripts/detalle.js"></script>
+</body>
+</html>

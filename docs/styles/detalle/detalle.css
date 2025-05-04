@@ -1,0 +1,82 @@
+.detalle__juego{
+    margin: 160px auto;
+    width: 90%;
+    height: auto;
+}
+.detalle__juego--container{
+    width: 100%;  
+    display: flex;
+    flex-direction: column;
+}
+
+.juego__imagen{
+    width: 100%;
+    height: 200px;
+    object-position: center;
+    object-fit: cover;
+    box-shadow: 0 0px 2px 0 var(--border);
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+.juego__titulo{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.juego__text{
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.juego__fecha, .juego__plataformas{
+    font-weight: lighter;
+}
+.juego__fecha, .juego__plataformas{
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+.juego__title--descripcion{
+    margin-bottom: 15px;
+}
+.juego__descripcion--text{
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: justify;
+    margin-bottom: 20px;
+}
+
+/*Cards precios*/
+.precios__titulo{
+    margin-bottom: 20px;
+}
+
+.precios__lista{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+    width: 100%;
+}
+.precio__card{
+    display: grid;
+    grid-template-columns: 2fr 1fr auto; 
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 var(--border);
+    background-color: var(--veryPaleBlue);
+    padding-top: 15px;
+}
+.precio__tienda {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .precio__boton {
+    padding: 6px 12px;
+    background:var(--azulGradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    white-space: nowrap;
+  }

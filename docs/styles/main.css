@@ -1,18 +1,30 @@
 :root {
-    --black: #000000;
-    --white: #fffafa;
-    --background:#ebebeb;
-    --marronRgba: #d2b48c80;
-    --gris: #555555;
-    --border: #00000033;
-  }
+  --black: rgb(0, 0, 0);
+  --white: rgb(255, 250, 250);
+  --background:rgb(235, 235, 235);
+  --veryDarkBlue: rgb(30, 32, 42);
+  --gris: rgb(85, 85, 85);
+  --border: rgba(0, 0, 0, 0.2);
+  --darkGrayishBlue: rgb(99, 104, 126);
+  --lightToggle: rgb(174, 179, 203);
+  --lightGrayish: rgb(240, 242, 250);
+  --veryPaleBlue: rgb(245, 247, 255);
+  --azulGradient: linear-gradient(0.25turn, hsl(208, 100%, 60%), hsl(210, 90%, 50%), hsl(212, 100%, 40%));
+  --azulRgbaSuave: rgba(72, 139, 255, 0.25);
+  --darkDesaturated: hsl(228, 28%, 20%);
+  --veryDarkBlueDos: hsl(232, 19%, 15%);
+  --darkToggle: linear-gradient(0.25turn, #378fe6, #3eda82);
   
-  * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
+}
 
-  body{
-    font-family: "PT Sans Narrow", sans-serif;
-  }
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: "PT Sans Narrow", sans-serif;
+  background-color: var(--white);
+  color: var(--black);
+}

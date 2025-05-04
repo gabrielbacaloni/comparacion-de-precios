@@ -2,9 +2,21 @@ const cardTemplate = document.getElementById("card__template").content;
 const fragment = document.createDocumentFragment();
 const listadoTarjetas = document.querySelector(".cards__container"); //Div donde se ubicarán las tarjetas
 
-//cuando carga el html se ejecutará el pedido a la API
+//cuando carga el html se ejecutará el pedido a la API y verificará si hay hay algo en la URL
 document.addEventListener("DOMContentLoaded", () => {
-  listarJuegosPopulares();
+  const params = new URLSearchParams(window.location.search);
+  const query = params.get("q");
+
+  if (query) {
+    document.querySelector(
+      ".cards__title"
+    ).textContent = `Resultados para: ${query}`;
+    buscarJuego(query, selectOrden.value);
+    history.replaceState({ tipo: "busqueda", query: query }, "", `?q=${query}`);
+  } else {
+    listarJuegosPopulares();
+  }
+
   leerJuego();
 });
 
@@ -44,7 +56,10 @@ const mostrarJuegosPopulares = (data) => {
     clone.querySelector(".juego__generos").textContent = juego.genres
       .map((g) => g.name)
       .join(", ");
-
+    //Al clickear una card envia a la pagina de detalle
+    clone.querySelector(".card__juego").addEventListener("click", () => {
+      window.location.href = `detalle.html?id=${juego.id}`;
+    });
     fragment.appendChild(clone);
   });
   listadoTarjetas.appendChild(fragment);

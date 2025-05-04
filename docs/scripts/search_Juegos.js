@@ -2,19 +2,9 @@ const API_KEY = "4b1742eb29634e329d7fd29447d706ca";
 const impupSearch = document.querySelector(".search__form");
 const selectOrden = document.getElementById("ordenar-select");
 
-//Escuchar el click en el select para ordenal los juegos según un criterio
-selectOrden.addEventListener("change", () => {
-  const estadoActual = history.state;
-  if (estadoActual && estadoActual.tipo === "busqueda" && estadoActual.query) {
-    listadoTarjetas.innerHTML = "";
-    buscarJuego(estadoActual.query, selectOrden.value);
-  }
-});
-
 //Conectar a la api de búsqueda
 const buscarJuego = (nombre, orden = "relevancia") => {
   let ordering = "";
-
   if (orden === "rating_desc") ordering = "-rating";
   else if (orden === "rating_asc") ordering = "rating";
   else if (orden === "fecha_desc") ordering = "-released";
@@ -54,6 +44,15 @@ const leerJuego = () => {
   });
 };
 
+//Escuchar el click en el select para ordenal los juegos según un criterio
+selectOrden.addEventListener("change", () => {
+  const estadoActual = history.state;
+  if (estadoActual && estadoActual.tipo === "busqueda" && estadoActual.query) {
+    listadoTarjetas.innerHTML = "";
+    buscarJuego(estadoActual.query, selectOrden.value);
+  }
+});
+
 //Pintar las cards con la información de los juegos según lo que se buscó
 const pintarCards = (data) => {
   if (data.length === 0) {
@@ -82,6 +81,11 @@ const pintarCards = (data) => {
     clone.querySelector(".juego__generos").textContent = juego.genres
       .map((g) => g.name)
       .join(", ");
+
+    //Al clickear una card envia a la pagina de detalle
+    clone.querySelector(".card__juego").addEventListener("click", () => {
+      window.location.href = `detalle.html?id=${juego.id}`;
+    });
 
     fragment.appendChild(clone);
   });

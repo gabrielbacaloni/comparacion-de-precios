@@ -1,6 +1,7 @@
 .cards{
     width: 80%;
     margin: 60px auto;
+    cursor: pointer;
 }
 
 .cards__container{
@@ -10,10 +11,25 @@
 }
 
 .card__juego{
-    display: inline-block;
+    position: relative;
+    /*display: inline-block;*/
     border-radius: 5px;
     margin-top: 20px;
     box-shadow: 0 4px 8px 0 var(--border);
+    background-color: var(--veryPaleBlue);
+    padding: 10px;
+    padding-top: 15px;
+    
+}
+.linea{
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    display: inline-block;
+    top: 0px;
+    left: 0px;
+    border-radius: 10px 10px 00px 0px;
+    background: var(--azulGradient);
 }
 .juego__img{
     width: 100%;

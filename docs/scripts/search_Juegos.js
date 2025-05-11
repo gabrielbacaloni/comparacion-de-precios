@@ -1,5 +1,5 @@
 const API_KEY = "4b1742eb29634e329d7fd29447d706ca";
-const impupSearch = document.querySelector(".search__form");
+const imputSearch = document.querySelector(".search__form");
 const selectOrden = document.getElementById("ordenar-select");
 
 //Conectar a la api de búsqueda
@@ -25,7 +25,7 @@ const buscarJuego = (nombre, orden = "relevancia") => {
 
 //Leer lo escrito en el buscador
 const leerJuego = () => {
-  impupSearch.addEventListener("submit", (e) => {
+  imputSearch.addEventListener("submit", (e) => {
     e.preventDefault();
     const juegoSearch = document
       .querySelector(".search__form--input")
@@ -40,7 +40,7 @@ const leerJuego = () => {
     document.querySelector(
       ".cards__title"
     ).textContent = `Resultados para: ${juegoSearch}`;
-    impupSearch.reset();
+    imputSearch.reset();
   });
 };
 

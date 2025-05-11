@@ -62,7 +62,7 @@
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 var(--border);
-    background-color: var(--veryPaleBlue);
+    background-color: var(--darkDesaturated);
     padding-top: 15px;
 }
 .precio__tienda {

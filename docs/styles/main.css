@@ -9,11 +9,13 @@
   --lightToggle: rgb(174, 179, 203);
   --lightGrayish: rgb(240, 242, 250);
   --veryPaleBlue: rgb(245, 247, 255);
+  --redGradient:  linear-gradient(0.25turn, #fdc468, #df4996);
   --azulGradient: linear-gradient(0.25turn, hsl(208, 100%, 60%), hsl(210, 90%, 50%), hsl(212, 100%, 40%));
   --azulRgbaSuave: rgba(72, 139, 255, 0.25);
   --darkDesaturated: hsl(228, 28%, 20%);
   --veryDarkBlueDos: hsl(232, 19%, 15%);
   --darkToggle: linear-gradient(0.25turn, #378fe6, #3eda82);
+  --background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(39, 46, 184, 1) 50%, rgba(4, 4, 51, 1) 100%);
   
 }
 
@@ -23,8 +25,14 @@
   box-sizing: border-box;
 }
 
-body{
-  font-family: "PT Sans Narrow", sans-serif;
-  background-color: var(--white);
-  color: var(--black);
+body {
+  font-family: "Inconsolata", monospace;
+  background: var( --background);
+  color: white;
+  position: relative;
+  overflow-x: hidden;
 }
+
+
+
+

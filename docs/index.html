@@ -6,42 +6,52 @@
     <title>GG Price</title>
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/inicio/presentacion.css">
     <link rel="stylesheet" href="./styles/inicio/search.css">
     <link rel="stylesheet" href="./styles/inicio/card.css">
     <link rel="stylesheet" href="./styles/inicio/index_desktop.css">
-    <link rel="stylesheet" href="./styles/cambioModo.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 <body >
     <!--Encabezado--> 
     <header class="header">
-        <img src="./assets/logo-ggprice.png" alt="GG PRICE logo" class="header__logo">
+        <img src="./assets/logo-ggprice_transparente.png" alt="GG PRICE logo" class="header__logo">
         <i  class= "fas fa-bars menu__button" id="menu-button"></i>
-
         <ul class="menu__options" id="menu-options">
             <li class="menu__options--item">Iniciar sesión</li>
             <li class="menu__options--item">Registrarse</li>
         </ul>
     </header>
-     
 
+     
+ <section class="container__presentación">
+            <h1 class="presentacion__titulo">Compará precios de videojuegos en un solo lugar</h1>
+            <img src="./assets/joystick-dos.png" alt="joystick decorativo" class="presentacion__img">
+        </section>
    <!--Cuerpo de la página--> 
     <main class="main">
+    <!--Descripcion de la página--> 
+       
+
         <!--Título y barra de búsqueda--> 
         <section class="section__search">
-            <h1 class="search--title">Buscar juegos</h1>
+           
             <form class="search__form" role="search" aria-label="Buscar juegos">
                 <div class="search__form--container">
                   <input class="search__form--input" type="text" placeholder="Buscar por título" name="busqueda" />
                   <button class="search__form--button" type="submit">
-                    <i class="fas fa-search"></i>
+                    <i class="fas fa-search search__form--icon"></i>
                   </button>
                 </div>
               </form>
               <!--Select para ordenar los juegos-->
               <div class="search__ordenar-container">
-                <label class="search__label" for="ordenar-select">Ordenar por:</label>
+                <label class="search__label" for="ordenar-select">Ordenar por</label>
                 <select id="ordenar-select" class="ordenar__select">
                   <option value="relevancia" selected>Relevancia</option>
                   <option value="rating_desc">Mejor puntuados</option>
@@ -65,7 +75,6 @@
         <!--template cards juegos-->
         <template  id="card__template">
             <div class="card__juego">
-                <span class="linea"></span>
                 <img class="juego__img" src="" alt="">
                 <div class="container__juego--info">
                     <h2 class="juego__name"></h2>
@@ -73,6 +82,7 @@
                     <p class="juego__lanzamiento"></p>
                     <p class="juego__rating"></p>
                     <p class="juego__generos"></p>
+                   
                 </div>
             </div>
         </template>
@@ -83,6 +93,6 @@
     <script src="https://kit.fontawesome.com/d9e2ae4403.js" crossorigin="anonymous"></script>
     <script src="./scripts/index.js"></script>
     <script src="./scripts/search_Juegos.js"></script>
-   
+  
 </body>
 </html>

@@ -59,12 +59,20 @@
     grid-template-columns: 2fr 1fr auto; 
     align-items: center;
     gap: 10px;
-    padding: 10px;
     border-radius: 5px;
-    box-shadow: 0 4px 8px 0 var(--border);
-    background-color: var(--darkDesaturated);
-    padding-top: 15px;
+     padding: 15px;
+    background: var(--background);
+    border: 2px solid transparent;
+    background-image: linear-gradient(#1f1f1f, #1f1f1f), var(--redGradient);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+
 }
+.precio__valor{
+    text-align: center;
+}
+
 .precio__tienda {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -72,11 +80,38 @@
   }
 
   .precio__boton {
-    padding: 6px 12px;
-    background:var(--azulGradient);
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: bold;
-    white-space: nowrap;
-  }
+  position: relative;
+  display: inline-block;
+  padding: 6px 14px;
+  font-weight: bold;
+  color: white;
+  background: transparent;
+  border-radius: 5px;
+  text-decoration: none;
+  z-index: 1;
+  overflow: hidden;
+  border: none;
+}
+
+.precio__boton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--redGradient); 
+  z-index: -1;
+  padding: 2px; 
+  border-radius: 5px;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude; 
+  -webkit-mask-composite: destination-out;
+}
+
+.precio__boton:hover {
+  background: linear-gradient(0.25turn, #fdc468, #df4996);
+  color: white;
+}

@@ -95,6 +95,7 @@ const pintarPrecios = (precios) => {
     // Cambiar color según comparación
     if (salePrice < precioNormal) {
       valorElemento.style.color = "green";
+      valorElemento.textContent = `⭐ $${salePrice}`;
     } else if (salePrice > precioNormal) {
       valorElemento.style.color = "red";
     }

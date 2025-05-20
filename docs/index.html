@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="./styles/inicio/card.css">
     <link rel="stylesheet" href="./styles/inicio/index_desktop.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="./styles/login_singUp.css">
+    <link rel="stylesheet" href="./styles/login_singUp_desktop.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
     
@@ -21,10 +23,18 @@
     <!--Encabezado--> 
     <header class="header">
         <img src="./assets/logo-ggprice_transparente.png" alt="GG PRICE logo" class="header__logo">
+        
         <i  class= "fas fa-bars menu__button" id="menu-button"></i>
+        <i id="menu-cerrar" class="far fa-times-circle"></i>
+         <nav id="nav-movil">
+            <ul class="nav-ul-movil">
+                <li><a href="#" id="nav__abrir-login">Iniciar sesión</a></li>
+                <li><a href="#" id="nav__abrir-singUp">Registrarse</a></li>
+            </ul>
+        </nav>
         <ul class="menu__options" id="menu-options">
-            <li class="menu__options--item">Iniciar sesión</li>
-            <li class="menu__options--item">Registrarse</li>
+            <li id="nav__abrir-login-desktop" class="menu__options--item">Iniciar sesión</li>
+            <li id="nav__abrir-singup-desktop" class="menu__options--item">Registrarse</li>
         </ul>
     </header>
 
@@ -36,11 +46,8 @@
         </section>
    <!--Cuerpo de la página--> 
     <main class="main">
-   
-
         <!--Título y barra de búsqueda--> 
         <section class="section__search">
-           
             <form class="search__form" role="search" aria-label="Buscar juegos">
                 <div class="search__form--container">
                   <input class="search__form--input" type="text" placeholder="Buscar por título" name="busqueda" />
@@ -89,10 +96,46 @@
 
     </main>
 
+    <!--Card para iniciar sesión-->
+    <div class="popUp__Container" id="container__iniciar-sesion">
+        <i class=" fas fa-times" id="popUp__cerrar"></i>
+        <h2 class="popUp__title">Iniciar sesión</h2>
+        <form class="popUp__form" id="popup--iniciar-sesion">
+            <label for="login__email">
+                <span class="popUp__error">email incorrecto</span>
+                <input id="login__email" name="email" type="email" class="popUp__form--input"  placeholder="email">
+            </label>
+            <label for="login__password">
+                <input id="login__password" name="password" type="password" class="popUp__form--input" placeholder="contraseña">
+            </label>
+                <button class="login__btn">Ingresar</button>
+            </form>
+    </div>
 
+    <!--Card Registrarse-->
+    <div class="popUp__Container" id="container__registrarse">
+        <i class=" fas fa-times" id="popUp__cerrar-registro"></i>
+        <h2 class="popUp__title">Registrarse</h2>
+        <form class="popUp__form" id="popUp__registro">
+            <label for="name">
+                <input id="registro__name" name="name" type="text" class="popUp__form--input" placeholder="Nombre">
+            </label>
+            <label for="registro__email">
+                <span class="popUp__error">email incorrecto</span>
+                <input id="registro__email" name="email" type="email" class="popUp__form--input"  placeholder="email">
+            </label>
+                <label for="login__password">
+                <input id="login__password--registro" name="password" type="password" class="popUp__form--input" placeholder="contraseña">
+            </label>
+                <button class="registro__btn">Registrarse</button>
+            </form>
+    </div>
+
+    <div id="modal-backdrop"></div>
     <script src="https://kit.fontawesome.com/d9e2ae4403.js" crossorigin="anonymous"></script>
     <script src="./scripts/index.js"></script>
     <script src="./scripts/search_Juegos.js"></script>
+    <script src="./scripts/inicioSesion.js"></script>
   
 </body>
 </html>

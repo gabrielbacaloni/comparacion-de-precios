@@ -6,7 +6,9 @@
     --backgroundCards: rgb(31, 31, 31);
     --darkToggle: linear-gradient(0.25turn, #378fe6, #3eda82);
     --background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(39, 46, 184, 1) 50%, rgba(4, 4, 51, 1) 100%);
-    
+    --fondo: rgba(4, 4, 51, 1);
+   --darkGrayishBlue: #63687e;
+   --veryPaleBlue: #f5f7ff;
   }
   
   * {
@@ -23,6 +25,9 @@
     overflow-x: hidden;
 }
 
+
+
+  
 
 
   

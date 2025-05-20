@@ -1,0 +1,11 @@
+@media( min-width: 600px){
+  .popUp__Container{
+    width: 70%;
+  }
+}
+
+@media( min-width: 800px){
+  .popUp__Container{
+    width: 50%;
+  }
+}

@@ -24,7 +24,60 @@
     position: relative;
     cursor: pointer;
 }
+#menu-cerrar {
+    display: none;
+    color: var(--blanco);
+    font-size: 25px;
+    position: relative;
+  }
 
+ #nav-movil {
+    display: none;
+    position: absolute;
+    top: 80%;
+    right: 10px;
+    text-align: right;
+    background: var(--fondo);
+  }
+.nav-ul-movil {
+    background-color: var(--marronOscuro);
+    padding: 10px;
+  }
+  .nav-ul-movil li {
+    list-style: none;
+    padding: 10px;
+  }
+  .nav-ul-movil a {
+    text-decoration: none;
+    color: var(--blanco);
+    font-size: 20px;
+  }
+
+
+#nav-movil {
+  display: none;
+}
+
+/*Aparecer y desaparecer*/
+#nav-movil.visible {
+  display: block; 
+}
+
+#menu-cerrar {
+  display: none;
+}
+
+#menu-cerrar.visible {
+  display: inline-block;
+}
+
+.menu__button.visible {
+  display: inline-block;
+}
+
+.menu__button.hidden {
+  display: none;
+}
 
   /*Desktop*/
 .menu__options{

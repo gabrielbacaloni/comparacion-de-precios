@@ -78,11 +78,16 @@
     border: 1px solid var(--white);
     border-radius: 5px;
     background: transparent;
-    color: white;
+    color: var(--white);
     outline: none;
-    
+}
+#ordenar-select option {
+  background-color: var(--fondo);
+  color: var(--white);
 }
 
+
+  
 
 
   

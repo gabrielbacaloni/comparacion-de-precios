@@ -11,9 +11,7 @@ const buscarJuego = (nombre, orden = "relevancia") => {
   else if (orden === "fecha_asc") ordering = "released";
 
   fetch(
-    `https://api.rawg.io/api/games?key=${API_KEY}&search=${encodeURIComponent(
-      nombre
-    )}${ordering ? `&ordering=${ordering}` : ""}`
+    `http://localhost:3000/api/juegos?search=${encodeURIComponent(nombre)}${ordering ? `&ordering=${ordering}` : ""}&page_size=20`
   )
     .then((res) => res.json())
     .then((data) => {
@@ -69,9 +67,9 @@ const pintarCards = (data) => {
     clone.querySelector(".juego__name").textContent = juego.name;
     const plataformas = Array.isArray(juego.platforms) //Chequar antes si tiene un array de plataformas porque sino tira error
       ? juego.platforms
-          .filter((p) => p.platform && p.platform.name)
-          .map((p) => p.platform.name)
-          .join(", ")
+        .filter((p) => p.platform && p.platform.name)
+        .map((p) => p.platform.name)
+        .join(", ")
       : "Plataformas no disponibles";
     const lanzamiento = juego.released ? juego.released : "-";
     clone.querySelector(

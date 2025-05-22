@@ -113,4 +113,67 @@ document.addEventListener("DOMContentLoaded", () => {
       hamburguesaMenu.classList.remove("hidden");
     }
   });
+
+  // ---- REGISTRO DE USUARIO ----
+  const formRegistro = document.getElementById("popUp__registro");
+  if (formRegistro) {
+    formRegistro.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const nickname = document.getElementById('registro__name').value;
+      const mail = document.getElementById('registro__email').value;
+      const password = document.getElementById('login__password--registro').value;
+
+      try {
+        const resp = await fetch('http://localhost:3000/api/usuarios/registro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nickname, mail, password })
+        });
+        const data = await resp.json();
+        if (resp.ok) {
+          alert('Usuario registrado correctamente');
+          // Cerrar popup, limpiar campos
+          formRegistro.reset();
+          ocultarElemento(popUpRegistro);
+          backdrop.style.display = "none";
+        } else {
+          alert(data.error || 'Error al registrar usuario');
+        }
+      } catch (error) {
+        alert('Error al conectar con el servidor');
+      }
+    });
+  }
+  
+  // ---- LOGIN DE USUARIO ----
+  const formLogin = document.getElementById("popup--iniciar-sesion");
+  if (formLogin) {
+    formLogin.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const mail = document.getElementById('login__email').value;
+      const password = document.getElementById('login__password').value;
+
+      try {
+        const resp = await fetch('http://localhost:3000/api/usuarios/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mail, password })
+        });
+        const data = await resp.json();
+        if (resp.ok) {
+          alert('Bienvenido, ' + data.user.nickname + '!');
+          // Cerrar popup, limpiar campos
+          formLogin.reset();
+          ocultarElemento(popUpContainer);
+          backdrop.style.display = "none";
+          // Si querés, guardá datos del usuario en localStorage
+          localStorage.setItem('usuarioGG', JSON.stringify(data.user));
+        } else {
+          alert(data.error || 'Error al iniciar sesión');
+        }
+      } catch (error) {
+        alert('Error al conectar con el servidor');
+      }
+    });
+  }
 });

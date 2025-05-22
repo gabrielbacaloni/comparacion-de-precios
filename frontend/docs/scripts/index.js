@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /*Llamada a la api para traer los juegos populares */
 const listarJuegosPopulares = () => {
   fetch(
-    `https://api.rawg.io/api/games?key=${API_KEY}&ordering=-rating&page_size=20`
+    `http://localhost:3000/api/juegos?ordering=-rating&page_size=20`
   )
     .then((res) => {
       return res.json();

@@ -12,7 +12,7 @@ const obtenerIdDeURL = () => {
 
 //Conectar con la api rawg para pedir mas detalles
 const pedirDetalles = (juegoId) => {
-  fetch(`https://api.rawg.io/api/games/${juegoId}?key=${API_KEY}`)
+  fetch(`http://localhost:3000/api/juegos/${juegoId}`)
     .then((res) => res.json())
     .then((data) => {
       pintarDetalles(data);
@@ -53,7 +53,7 @@ const pintarDetalles = (juego) => {
 
 //Diferencias las tiendas que venden el videojuego
 const obtenerNegocios = () => {
-  return fetch("https://www.cheapshark.com/api/1.0/stores")
+  return fetch('http://localhost:3000/api/tiendas')
     .then((res) => {
       return res.json();
     })
@@ -70,9 +70,7 @@ const obtenerNegocios = () => {
 //Pedir a la api los precios
 const obtenerPrecios = (nombreJuego) => {
   fetch(
-    `https://www.cheapshark.com/api/1.0/deals?title=${encodeURIComponent(
-      nombreJuego
-    )}&exact=1`
+    `http://localhost:3000/api/precios?title=${encodeURIComponent(nombreJuego)}`
   )
     .then((res) => res.json())
     .then((data) => {

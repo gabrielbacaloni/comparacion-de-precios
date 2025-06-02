@@ -38,10 +38,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //Cerrar y abrir el menú
   hamburguesaMenu.addEventListener("click", () => {
-    hamburguesaMenu.classList.add("hidden");
-    cerrarMenu.classList.add("visible");
-    cerrarMenu.classList.remove("hidden");
-    navMovil.classList.add("visible");
+    if (navMovil.classList.contains("visible")) {
+      // Si ya está abierto, cerralo
+      navMovil.classList.remove("visible");
+      cerrarMenu.classList.remove("visible");
+      cerrarMenu.classList.add("hidden");
+      hamburguesaMenu.classList.remove("hidden");
+      hamburguesaMenu.classList.add("visible");
+    } else {
+      // Si está cerrado, abrilo
+      hamburguesaMenu.classList.add("hidden");
+      cerrarMenu.classList.add("visible");
+      cerrarMenu.classList.remove("hidden");
+      navMovil.classList.add("visible");
+    }
   });
 
   cerrarMenu.addEventListener("click", () => {
@@ -102,9 +112,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //cerrar el menu si se hace click afuera
   document.addEventListener("click", (e) => {
-    const esClickDentroDelMenu =
-      navMovil.contains(e.target) || hamburguesaMenu.contains(e.target);
-
+    const esClickDentroDelMenu = navMovil.contains(e.target)
+      || hamburguesaMenu.contains(e.target)
+      || (typeof profileAvatar !== "undefined" && profileAvatar.contains(e.target))
+      || (document.getElementById("profile-avatar") && document.getElementById("profile-avatar").contains(e.target));
     if (!esClickDentroDelMenu && navMovil.classList.contains("visible")) {
       navMovil.classList.remove("visible");
       cerrarMenu.classList.remove("visible");
@@ -144,11 +155,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  
+
   // ---- LOGIN DE USUARIO ----
   const formLogin = document.getElementById("popup--iniciar-sesion");
   if (formLogin) {
-    formLogin.addEventListener("submit", async function(e) {
+    formLogin.addEventListener("submit", async function (e) {
       e.preventDefault();
       const mail = document.getElementById('login__email').value;
       const password = document.getElementById('login__password').value;
@@ -168,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
           backdrop.style.display = "none";
           // Si querés, guardá datos del usuario en localStorage
           localStorage.setItem('usuarioGG', JSON.stringify(data.user));
+          if (window.actualizarMenuSegunSesion) window.actualizarMenuSegunSesion();
         } else {
           alert(data.error || 'Error al iniciar sesión');
         }
@@ -176,4 +188,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+  document.querySelector('.header').addEventListener('click', function (e) {
+    // Si el click fue en el logo, dejamos pasar.
+    if (e.target.closest('.header__logo')) return;
+    // Si el click fue fuera del logo, evitamos que haga algo
+    e.preventDefault();
+  });
 });

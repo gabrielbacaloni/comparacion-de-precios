@@ -2,7 +2,7 @@
 @media( min-width: 800px){
    /* Header */
     .menu__options{
-        display: flex;
+        display: none !important;
     }
     .menu__options--item {
         list-style: none;
@@ -54,7 +54,7 @@
     }
 /*No se verá en la opción de escritorio*/
     .header .menu__button{
-        display: none;
+        display: inline-block !important;
     }
 
     

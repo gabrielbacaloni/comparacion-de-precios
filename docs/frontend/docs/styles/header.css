@@ -1,67 +1,68 @@
-.header{
-    width: 100vw; 
-    padding: 20px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    z-index: 2;
-   /*box-shadow: 0 4px 8px 0 var(--azulRgbaSuave);*/ 
-    background: var( --background);
-   
+.header {
+  width: 100vw;
+  padding: 20px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  /*box-shadow: 0 4px 8px 0 var(--azulRgbaSuave);*/
+  background: var(--background);
+
 }
 
-.header__logo{
-    border-radius: 5px;
-    width: 30%;
-    height: auto;
-    cursor: pointer
+.header__logo {
+  border-radius: 5px;
+  width: 30%;
+  height: auto;
+  cursor: pointer
 }
 
-.menu__button{
-    display: inline-block;
-    font-size: 25px;
-    position: relative;
-    cursor: pointer;
+.menu__button {
+  vertical-align: middle;
+  display: inline-block !important;
+  font-size: 25px;
+  position: relative;
+  cursor: pointer;
 }
+
 #menu-cerrar {
-    display: none;
-    color: var(--blanco);
-    font-size: 25px;
-    position: relative;
-  }
-
- #nav-movil {
-    display: none;
-    position: absolute;
-    top: 80%;
-    right: 10px;
-    text-align: right;
-    background: var(--fondo);
-  }
-.nav-ul-movil {
-    background-color: var(--marronOscuro);
-    padding: 10px;
-  }
-  .nav-ul-movil li {
-    list-style: none;
-    padding: 10px;
-  }
-  .nav-ul-movil a {
-    text-decoration: none;
-    color: var(--blanco);
-    font-size: 20px;
-  }
-
+  vertical-align: middle;
+  display: none;
+  color: var(--blanco);
+  font-size: 25px;
+  position: relative;
+}
 
 #nav-movil {
   display: none;
+  position: absolute;
+  top: 80%;
+  right: 10px;
+  text-align: right;
+  background: var(--fondo);
+}
+
+.nav-ul-movil {
+  background-color: var(--marronOscuro);
+  padding: 10px;
+}
+
+.nav-ul-movil li {
+  list-style: none;
+  padding: 10px;
+}
+
+.nav-ul-movil a {
+  text-decoration: none;
+  color: var(--blanco);
+  font-size: 20px;
 }
 
 /*Aparecer y desaparecer*/
 #nav-movil.visible {
-  display: block; 
+  display: block;
 }
 
 #menu-cerrar {
@@ -80,7 +81,7 @@
   display: none;
 }
 
-  /*Desktop*/
-.menu__options{
-    display: none;
+/*Desktop*/
+.menu__options {
+  display: none !important;
 }

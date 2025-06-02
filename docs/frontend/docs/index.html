@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,18 +16,24 @@
     <link rel="stylesheet" href="./styles/login_singUp_desktop.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
-<body >
-    <!--Encabezado--> 
+
+<body>
+    <!--Encabezado-->
     <header class="header">
-        <img src="./assets/logo-ggprice_transparente.png" alt="GG PRICE logo" class="header__logo">
-        
-        <i  class= "fas fa-bars menu__button" id="menu-button"></i>
+        <a href="index.html">
+            <img src="./assets/logo-ggprice_transparente.png" alt="GG PRICE logo" class="header__logo">
+        </a>
+
+        <img id="profile-avatar" class="profile-avatar" style="display:none;" src="./assets/avatar-default.png"
+            alt="avatar">
+        <i class="fas fa-bars menu__button" id="menu-button"></i>
         <i id="menu-cerrar" class="far fa-times-circle"></i>
-         <nav id="nav-movil">
+        
+        <nav id="nav-movil">
             <ul class="nav-ul-movil">
                 <li><a href="#" id="nav__abrir-login">Iniciar sesión</a></li>
                 <li><a href="#" id="nav__abrir-singUp">Registrarse</a></li>
@@ -38,39 +45,39 @@
         </ul>
     </header>
 
-      <!--Descripcion de la página--> 
-       
- <section class="container__presentación">
-            <h1 class="presentacion__titulo">Compará precios de videojuegos en un solo lugar</h1>
-            <img src="./assets/joystick-dos.png" alt="joystick decorativo" class="presentacion__img">
-        </section>
-   <!--Cuerpo de la página--> 
+    <!--Descripcion de la página-->
+
+    <section class="container__presentación">
+        <h1 class="presentacion__titulo">Compará precios de videojuegos en un solo lugar</h1>
+        <img src="./assets/joystick-dos.png" alt="joystick decorativo" class="presentacion__img">
+    </section>
+    <!--Cuerpo de la página-->
     <main class="main">
-        <!--Título y barra de búsqueda--> 
+        <!--Título y barra de búsqueda-->
         <section class="section__search">
             <form class="search__form" role="search" aria-label="Buscar juegos">
                 <div class="search__form--container">
-                  <input class="search__form--input" type="text" placeholder="Buscar por título" name="busqueda" />
-                  <button class="search__form--button" type="submit">
-                    <i class="fas fa-search search__form--icon"></i>
-                  </button>
+                    <input class="search__form--input" type="text" placeholder="Buscar por título" name="busqueda" />
+                    <button class="search__form--button" type="submit">
+                        <i class="fas fa-search search__form--icon"></i>
+                    </button>
                 </div>
-              </form>
-              <!--Select para ordenar los juegos-->
-              <div class="search__ordenar-container">
+            </form>
+            <!--Select para ordenar los juegos-->
+            <div class="search__ordenar-container">
                 <label class="search__label" for="ordenar-select">Ordenar por</label>
                 <select id="ordenar-select" class="ordenar__select">
-                  <option value="relevancia" selected>Relevancia</option>
-                  <option value="rating_desc">Mejor puntuados</option>
-                  <option value="rating_asc">Peor puntuados</option>
-                  <option value="fecha_desc">Más recientes</option>
-                  <option value="fecha_asc">Más antiguos</option>
+                    <option value="relevancia" selected>Relevancia</option>
+                    <option value="rating_desc">Mejor puntuados</option>
+                    <option value="rating_asc">Peor puntuados</option>
+                    <option value="fecha_desc">Más recientes</option>
+                    <option value="fecha_asc">Más antiguos</option>
                 </select>
-              </div>
-              
+            </div>
+
         </section>
-        
-        <!--Cards con los juegos--> 
+
+        <!--Cards con los juegos-->
         <section class="cards">
             <h3 class="cards__title">Juegos mas populares</h3>
             <div class="cards__container">
@@ -78,9 +85,8 @@
             </div>
         </section>
 
-
         <!--template cards juegos-->
-        <template  id="card__template">
+        <template id="card__template">
             <div class="card__juego">
                 <img class="juego__img" src="" alt="">
                 <div class="container__juego--info">
@@ -89,7 +95,7 @@
                     <p class="juego__lanzamiento"></p>
                     <p class="juego__rating"></p>
                     <p class="juego__generos"></p>
-                   
+
                 </div>
             </div>
         </template>
@@ -103,13 +109,14 @@
         <form class="popUp__form" id="popup--iniciar-sesion">
             <label for="login__email">
                 <span class="popUp__error">email incorrecto</span>
-                <input id="login__email" name="email" type="email" class="popUp__form--input"  placeholder="email">
+                <input id="login__email" name="email" type="email" class="popUp__form--input" placeholder="email">
             </label>
             <label for="login__password">
-                <input id="login__password" name="password" type="password" class="popUp__form--input" placeholder="contraseña">
+                <input id="login__password" name="password" type="password" class="popUp__form--input"
+                    placeholder="contraseña">
             </label>
-                <button class="login__btn">Ingresar</button>
-            </form>
+            <button class="login__btn">Ingresar</button>
+        </form>
     </div>
 
     <!--Card Registrarse-->
@@ -122,13 +129,14 @@
             </label>
             <label for="registro__email">
                 <span class="popUp__error">email incorrecto</span>
-                <input id="registro__email" name="email" type="email" class="popUp__form--input"  placeholder="email">
+                <input id="registro__email" name="email" type="email" class="popUp__form--input" placeholder="email">
             </label>
-                <label for="login__password">
-                <input id="login__password--registro" name="password" type="password" class="popUp__form--input" placeholder="contraseña">
+            <label for="login__password">
+                <input id="login__password--registro" name="password" type="password" class="popUp__form--input"
+                    placeholder="contraseña">
             </label>
-                <button class="registro__btn">Registrarse</button>
-            </form>
+            <button class="registro__btn">Registrarse</button>
+        </form>
     </div>
 
     <div id="modal-backdrop"></div>
@@ -136,6 +144,8 @@
     <script src="./scripts/index.js"></script>
     <script src="./scripts/search_Juegos.js"></script>
     <script src="./scripts/inicioSesion.js"></script>
-  
+    <script src="./scripts/authUI.js"></script>
+
 </body>
+
 </html>

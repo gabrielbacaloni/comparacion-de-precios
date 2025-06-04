@@ -173,6 +173,18 @@ document.addEventListener("DOMContentLoaded", function () {
       alert(data.error || 'Error al subir la foto');
     }
   });
+
+  // Enlace al botón de Favoritos - Desktop
+  favoritosDesktop.addEventListener("click", () => {
+    window.location.href = "favoritos.html";
+  });
+
+  // Enlace al botón de Favoritos - Mobile
+  favoritosMobile.querySelector("a").addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = "favoritos.html";
+  });
+
   // ---- CERRAR SESIÓN ----
   function cerrarSesion() {
     localStorage.removeItem("usuarioGG");
@@ -196,6 +208,8 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("storage", actualizarMenuSegunSesion);
 
   window.actualizarMenuSegunSesion = actualizarMenuSegunSesion;
+  
+  window.addEventListener("load", actualizarMenuSegunSesion);
 
   // --- AVATAR CLICK PARA ABRIR MENÚ ---
   if (avatar && navMovil) {

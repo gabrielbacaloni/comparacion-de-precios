@@ -30,11 +30,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const cerrarRegistro = document.getElementById("popUp__cerrar-registro");
 
   const abrirLoginDesktop = document.getElementById("nav__abrir-login-desktop");
-  const abrirRegistroDesktop = document.getElementById(
-    "nav__abrir-singup-desktop"
-  );
+  const abrirRegistroDesktop = document.getElementById("nav__abrir-singup-desktop");
 
   const backdrop = document.getElementById("modal-backdrop");
+
+  const header = document.querySelector('.header');
+  if (header) {
+    header.addEventListener('click', function (e) {
+      // Si el click fue en el logo, dejamos pasar.
+      if (e.target.closest('.header__logo')) return;
+      // Si el click fue fuera del logo, evitamos que haga algo
+      e.preventDefault();
+    });
+  }
 
   //Cerrar y abrir el menú
   hamburguesaMenu.addEventListener("click", () => {
@@ -203,10 +211,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  document.querySelector('.header').addEventListener('click', function (e) {
-    // Si el click fue en el logo, dejamos pasar.
-    if (e.target.closest('.header__logo')) return;
-    // Si el click fue fuera del logo, evitamos que haga algo
-    e.preventDefault();
-  });
 });

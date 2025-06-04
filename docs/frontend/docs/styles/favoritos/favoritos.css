@@ -1,0 +1,30 @@
+    .favoritos__mensaje {
+        text-align: center;
+        font-size: 1.8rem;
+        margin-top: 100px;
+        color: var(--white);
+        opacity: 0.6;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 0.6;
+            transform: translateY(0);
+        }
+    }
+
+    .cards__title {
+        text-align: center;
+        margin: 100px 0 30px;
+        font-size: 2.2rem;
+    }
+
+    .cards__container {
+        margin-bottom: 60px;
+    }

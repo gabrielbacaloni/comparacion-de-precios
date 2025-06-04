@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Favoritos - GGPRICE</title>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/inicio/card.css" />
+    <link rel="stylesheet" href="./styles/inicio/index_desktop.css" />
+    <link rel="stylesheet" href="./styles/login_singUp.css" />
+    <link rel="stylesheet" href="./styles/login_singUp_desktop.css" />
+    <link rel="stylesheet" href="./styles/favoritos/favoritos.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Encabezado (cargado dinámicamente) -->
+    <header class="header">
+        <a href="index.html">
+            <img src="./assets/logo-ggprice_transparente.png" alt="GG PRICE logo" class="header__logo">
+        </a>
+
+        <img id="profile-avatar" class="profile-avatar" style="display:none;" src="./assets/avatar-default.png"
+            alt="avatar">
+        <i class="fas fa-bars menu__button" id="menu-button"></i>
+        <i id="menu-cerrar" class="far fa-times-circle"></i>
+
+        <nav id="nav-movil">
+            <ul class="nav-ul-movil">
+                <li><a href="#" id="nav__abrir-login">Iniciar sesión</a></li>
+                <li><a href="#" id="nav__abrir-singUp">Registrarse</a></li>
+                <li style="display: none;"><a href="#" id="nav__cambiar-foto-mobile">Cambiar foto</a></li>
+                <li style="display: none;"><a href="#" id="nav__favoritos-mobile">Favoritos</a></li>
+            </ul>
+        </nav>
+        <ul class="menu__options" id="menu-options">
+            <li id="nav__abrir-login-desktop" class="menu__options--item">Iniciar sesión</li>
+            <li id="nav__abrir-singup-desktop" class="menu__options--item">Registrarse</li>
+            <li id="nav__cambiar-foto-desktop" class="menu__options--item" style="display: none;">Cambiar foto</li>
+            <li id="nav__favoritos-desktop" class="menu__options--item" style="display: none;">Favoritos</li>
+        </ul>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main">
+        <section class="cards">
+            <h3 class="cards__title">Juegos favoritos</h3>
+            <div class="cards__container" id="favoritos-container">
+                <!-- Cards de juegos -->
+            </div>
+            <p id="mensaje-sin-favoritos" class="favoritos__mensaje" style="display: none;">
+                No tenés juegos favoritos guardados todavía 😢
+            </p>
+        </section>
+    </main>
+
+    <!-- Template para cada juego -->
+    <template id="card__template">
+        <div class="card__juego">
+            <img class="juego__img" src="" alt="">
+            <div class="container__juego--info">
+                <h2 class="juego__name"></h2>
+                <p class="juego__plataformas"></p>
+                <p class="juego__lanzamiento"></p>
+                <p class="juego__rating"></p>
+                <p class="juego__generos"></p>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="./scripts/inicioSesion.js"></script>
+    <script src="./scripts/favoritos.js"></script>
+    <script src="./scripts/authUI.js"></script>
+</body>
+
+</html>

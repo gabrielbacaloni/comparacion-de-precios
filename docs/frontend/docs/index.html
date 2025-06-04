@@ -32,16 +32,20 @@
             alt="avatar">
         <i class="fas fa-bars menu__button" id="menu-button"></i>
         <i id="menu-cerrar" class="far fa-times-circle"></i>
-        
+
         <nav id="nav-movil">
             <ul class="nav-ul-movil">
                 <li><a href="#" id="nav__abrir-login">Iniciar sesión</a></li>
                 <li><a href="#" id="nav__abrir-singUp">Registrarse</a></li>
+                <li style="display: none;"><a href="#" id="nav__cambiar-foto-mobile">Cambiar foto</a></li>
+                <li style="display: none;"><a href="#" id="nav__favoritos-mobile">Favoritos</a></li>
             </ul>
         </nav>
         <ul class="menu__options" id="menu-options">
             <li id="nav__abrir-login-desktop" class="menu__options--item">Iniciar sesión</li>
             <li id="nav__abrir-singup-desktop" class="menu__options--item">Registrarse</li>
+            <li id="nav__cambiar-foto-desktop" class="menu__options--item" style="display: none;">Cambiar foto</li>
+            <li id="nav__favoritos-desktop" class="menu__options--item" style="display: none;">Favoritos</li>
         </ul>
     </header>
 
@@ -124,7 +128,7 @@
         <i class=" fas fa-times" id="popUp__cerrar-registro"></i>
         <h2 class="popUp__title">Registrarse</h2>
         <form class="popUp__form" id="popUp__registro">
-            <label for="name">
+            <label for="registro__name">
                 <input id="registro__name" name="name" type="text" class="popUp__form--input" placeholder="Nombre">
             </label>
             <label for="registro__email">

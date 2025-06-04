@@ -147,6 +147,21 @@ document.addEventListener("DOMContentLoaded", () => {
           formRegistro.reset();
           ocultarElemento(popUpRegistro);
           backdrop.style.display = "none";
+          // Loguea automáticamente (llama al login y guarda el usuario en localStorage)
+          try {
+            const loginResp = await fetch('http://localhost:3000/api/usuarios/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ mail, password })
+            });
+            const loginData = await loginResp.json();
+            if (loginResp.ok) {
+              localStorage.setItem('usuarioGG', JSON.stringify(loginData.user));
+              if (window.actualizarMenuSegunSesion) window.actualizarMenuSegunSesion();
+            }
+          } catch (err) {
+            // Silencio, solo no lo loguea si hay error
+          }
         } else {
           alert(data.error || 'Error al registrar usuario');
         }

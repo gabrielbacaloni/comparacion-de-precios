@@ -1,13 +1,23 @@
 const express = require('express');
-const admin = require('firebase-admin');
 const cors = require('cors');
 const fetch = require('node-fetch');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+const { v4: uuidv4 } = require('uuid');
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+
+cloudinary.config({
+  cloud_name: 'gg-price',
+  api_key: '647523598588644',
+  api_secret: 'DGiq7ony223fmMMIjhreKRUa4jc'
+});
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const serviceAccount = require('./serviceAccountKey.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -135,6 +145,7 @@ app.post('/api/usuarios/login', async (req, res) => {
     res.json({
       message: 'Login correcto',
       user: {
+        id: query.docs[0].id, // <-- AGREGÁ ESTA LÍNEA
         nickname: userData.nickname,
         mail: userData.mail,
         img_perfil: userData.img_perfil
@@ -146,6 +157,33 @@ app.post('/api/usuarios/login', async (req, res) => {
 });
 
 const PORT = 3000;
+
+// Subir imagen de perfil 
+app.post('/api/usuarios/:id/subir-foto', upload.single('foto'), async (req, res) => {
+  const userId = req.params.id;
+  if (!req.file) return res.status(400).json({ error: 'No se envió archivo' });
+
+  try {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: 'ggprice_perfiles', resource_type: 'image' },
+      async (error, result) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).json({ error: 'Error al subir la imagen a Cloudinary' });
+        }
+        // Actualizá el campo img_perfil en Firestore
+        await db.collection('usuarios').doc(userId).update({ img_perfil: result.secure_url });
+        res.json({ url: result.secure_url });
+      }
+    );
+    streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error interno al subir la foto' });
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`Servidor GGPRICE escuchando en http://localhost:${PORT}`);
 });

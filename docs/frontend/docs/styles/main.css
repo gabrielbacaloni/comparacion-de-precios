@@ -37,3 +37,12 @@ body {
   cursor: pointer;
   background: #eee;
 }
+
+@media (min-width: 800px) {
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    border: 3px solid white;
+    box-shadow: 0 0 16px #df499680;
+  }
+}

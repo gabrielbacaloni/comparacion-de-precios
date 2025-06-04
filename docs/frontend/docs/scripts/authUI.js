@@ -39,6 +39,57 @@ document.addEventListener("DOMContentLoaded", function () {
     navUlMovil.appendChild(logoutMobile);
   }
 
+  // Cambiar foto Desktop
+  let cambiarFotoDesktop = document.getElementById("nav__cambiar-foto-desktop");
+  if (!cambiarFotoDesktop) {
+    cambiarFotoDesktop = document.createElement("li");
+    cambiarFotoDesktop.id = "nav__cambiar-foto-desktop";
+    cambiarFotoDesktop.className = "menu__options--item";
+    cambiarFotoDesktop.textContent = "Cambiar foto";
+    cambiarFotoDesktop.style.display = "none";
+    menuOptions.appendChild(cambiarFotoDesktop);
+  }
+
+  // Favoritos Desktop
+  let favoritosDesktop = document.getElementById("nav__favoritos-desktop");
+  if (!favoritosDesktop) {
+    favoritosDesktop = document.createElement("li");
+    favoritosDesktop.id = "nav__favoritos-desktop";
+    favoritosDesktop.className = "menu__options--item";
+    favoritosDesktop.textContent = "Favoritos";
+    favoritosDesktop.style.display = "none";
+    menuOptions.appendChild(favoritosDesktop);
+  }
+
+  // Cambiar foto Mobile
+  let cambiarFotoMobile = document.getElementById("nav__cambiar-foto-mobile");
+  if (!cambiarFotoMobile) {
+    cambiarFotoMobile = document.createElement("li");
+    cambiarFotoMobile.style.display = "none";
+    const link = document.createElement("a");
+    link.href = "#";
+    link.textContent = "Cambiar foto";
+    link.id = "nav__cambiar-foto-mobile";
+    cambiarFotoMobile.appendChild(link);
+    navUlMovil.appendChild(cambiarFotoMobile);
+  } else {
+    cambiarFotoMobile = cambiarFotoMobile.parentElement; // el <li> padre
+  }
+
+  // Favoritos Mobile
+  let favoritosMobile = document.getElementById("nav__favoritos-mobile");
+  if (!favoritosMobile) {
+    favoritosMobile = document.createElement("li");
+    favoritosMobile.style.display = "none";
+    const link = document.createElement("a");
+    link.href = "#";
+    link.textContent = "Favoritos";
+    link.id = "nav__favoritos-mobile";
+    favoritosMobile.appendChild(link);
+    navUlMovil.appendChild(favoritosMobile);
+  } else {
+    favoritosMobile = favoritosMobile.parentElement; // el <li> padre
+  }
   // --- FUNCIONES DE CONTROL ---
 
   function actualizarMenuSegunSesion() {
@@ -48,11 +99,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Desktop
     loginDesktop.style.display = logueado ? "none" : "";
     signupDesktop.style.display = logueado ? "none" : "";
+    cambiarFotoDesktop.style.display = logueado ? "" : "none";
+    favoritosDesktop.style.display = logueado ? "" : "none";
     logoutDesktop.style.display = logueado ? "" : "none";
 
     // Mobile
     loginMobile.parentElement.style.display = logueado ? "none" : "";
     signupMobile.parentElement.style.display = logueado ? "none" : "";
+    cambiarFotoMobile.style.display = logueado ? "" : "none";
+    favoritosMobile.style.display = logueado ? "" : "none";
     logoutMobile.style.display = logueado ? "" : "none";
 
     // Avatar y hamburguesa
@@ -71,7 +126,53 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Al cargar
   actualizarMenuSegunSesion();
+  // Crear un input file invisible
+  const inputFoto = document.createElement('input');
+  inputFoto.type = 'file';
+  inputFoto.accept = 'image/*';
+  inputFoto.style.display = 'none';
+  document.body.appendChild(inputFoto);
 
+  // Click en Cambiar foto (desktop)
+  cambiarFotoDesktop.addEventListener('click', () => inputFoto.click());
+  // Click en Cambiar foto (mobile)
+  cambiarFotoMobile.querySelector('a').addEventListener('click', (e) => {
+    e.preventDefault();
+    inputFoto.click();
+  });
+
+  // Cuando seleccionás una imagen
+  inputFoto.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const usuario = JSON.parse(localStorage.getItem('usuarioGG'));
+    if (!usuario) {
+      alert("Debes estar logueado");
+      return;
+    }
+
+    // Usar el id del usuario (doc.id), si solo guardaste el email, deberías guardar el id en localStorage
+    const userId = usuario.id || usuario.mail;
+
+    const formData = new FormData();
+    formData.append('foto', file);
+
+    const resp = await fetch(`http://localhost:3000/api/usuarios/${userId}/subir-foto`, {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await resp.json();
+    if (resp.ok && data.url) {
+      usuario.img_perfil = data.url;
+      localStorage.setItem('usuarioGG', JSON.stringify(usuario));
+      if (avatar) avatar.src = data.url;
+      alert('Foto de perfil actualizada');
+    } else {
+      alert(data.error || 'Error al subir la foto');
+    }
+  });
   // ---- CERRAR SESIÓN ----
   function cerrarSesion() {
     localStorage.removeItem("usuarioGG");
@@ -94,9 +195,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Por si el login se hace en otro archivo y no recarga, escucha cambios de localStorage
   window.addEventListener("storage", actualizarMenuSegunSesion);
 
-  // Opcional: después de login/registro exitoso (en inicioSesion.js), llamá a actualizarMenuSegunSesion()
-  // Ejemplo: luego de localStorage.setItem('usuarioGG', ...);
-  // agregar: actualizarMenuSegunSesion();
   window.actualizarMenuSegunSesion = actualizarMenuSegunSesion;
 
   // --- AVATAR CLICK PARA ABRIR MENÚ ---

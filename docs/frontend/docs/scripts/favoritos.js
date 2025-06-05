@@ -29,10 +29,45 @@ document.addEventListener("DOMContentLoaded", async () => {
       template.querySelector(".juego__lanzamiento").textContent = "Lanzado: " + (juego.fecha_lanzamiento || "-");
       template.querySelector(".juego__rating").textContent = `⭐ ${juego.rating || '-'}`;
       template.querySelector(".juego__generos").textContent = "(sin datos de géneros)";
-      
+
       template.querySelector(".card__juego").addEventListener("click", () => {
         window.location.href = `detalle.html?id=${juego.id_juego}`;
       });
+
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "🗑 Quitar";
+      btnEliminar.classList.add("btn-eliminar-fav");
+
+      btnEliminar.addEventListener("click", async (e) => {
+        e.stopPropagation(); // evita que se dispare el redireccionamiento
+
+        const confirmado = confirm("¿Querés quitar este juego de tus favoritos?");
+        if (!confirmado) return;
+
+        try {
+          const resp = await fetch("http://localhost:3000/api/favoritos", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id_usuario: usuario.id,
+              id_juego: juego.id_juego
+            })
+          });
+
+          const data = await resp.json();
+          if (resp.ok) {
+            alert("Favorito eliminado");
+            location.reload(); // o quitá el elemento directamente del DOM
+          } else {
+            alert("Error: " + (data.error || "No se pudo eliminar"));
+          }
+        } catch (err) {
+          console.error("Error al eliminar favorito:", err);
+          alert("Error al conectar con el servidor");
+        }
+      });
+
+      template.querySelector(".container__juego--info").appendChild(btnEliminar);
 
       favoritosContainer.appendChild(template);
     });

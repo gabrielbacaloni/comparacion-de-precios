@@ -161,46 +161,76 @@ document.addEventListener("DOMContentLoaded", () => {
   if (id) pedirDetalles(id);
 
   const btnFavorito = document.getElementById("btn-favorito");
-
-  // Mostrar u ocultar el botón según si el usuario está logueado
   const usuario = JSON.parse(localStorage.getItem('usuarioGG'));
-  if (usuario) {
-    btnFavorito.style.display = 'inline-block';
-  } else {
-    btnFavorito.style.display = 'none';
+
+  if (!usuario || !usuario.id) {
+    btnFavorito.style.display = "none";
+    return;
   }
 
-  btnFavorito.addEventListener("click", async () => {
-    const usuario = JSON.parse(localStorage.getItem('usuarioGG'));
-    if (!usuario || !usuario.id) {
-      alert("Tenés que estar logueado para agregar favoritos");
-      return;
-    }
+  // Mostrar botón y verificar si el juego está en favoritos
+  btnFavorito.style.display = "inline-block";
 
-    const idJuego = obtenerIdDeURL();
+  let estaEnFavoritos = false;
 
+  const verificarFavorito = async () => {
     try {
-      const resp = await fetch("http://localhost:3000/api/favoritos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_usuario: usuario.id,
-          id_juego: parseInt(idJuego)
-        })
-      });
+      const resp = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}`);
+      const favoritos = await resp.json();
+      estaEnFavoritos = favoritos.some(j => j.id_juego == id);
+      btnFavorito.textContent = estaEnFavoritos ? "🗑 Eliminar de Favoritos" : "❤️ Agregar a Favoritos";
+    } catch (err) {
+      console.error("Error al verificar favoritos:", err);
+    }
+  };
 
-      const data = await resp.json();
-      if (resp.ok) {
-        alert("✅ Juego agregado a tus favoritos");
+  verificarFavorito();
+
+  btnFavorito.addEventListener("click", async () => {
+    try {
+      if (estaEnFavoritos) {
+        const confirmado = confirm("¿Seguro que querés eliminar este juego de tus favoritos?");
+        if (!confirmado) return;
+
+        const resp = await fetch("http://localhost:3000/api/favoritos", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_usuario: usuario.id,
+            id_juego: parseInt(id)
+          })
+        });
+
+        if (resp.ok) {
+          alert("❌ Juego eliminado de favoritos");
+          estaEnFavoritos = false;
+          btnFavorito.textContent = "❤️ Agregar a Favoritos";
+        } else {
+          alert("No se pudo eliminar");
+        }
+
       } else {
-        alert("⚠️ " + (data.error || "No se pudo agregar"));
+        const resp = await fetch("http://localhost:3000/api/favoritos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_usuario: usuario.id,
+            id_juego: parseInt(id)
+          })
+        });
+
+        if (resp.ok) {
+          alert("✅ Juego agregado a favoritos");
+          estaEnFavoritos = true;
+          btnFavorito.textContent = "🗑 Eliminar de Favoritos";
+        } else {
+          const data = await resp.json();
+          alert("No se pudo agregar: " + (data.error || ""));
+        }
       }
     } catch (err) {
-      alert("❌ Error al conectar con el servidor");
-      console.error(err);
+      console.error("Error en acción de favoritos:", err);
+      alert("Error de conexión con el servidor");
     }
   });
 });
-
-
-

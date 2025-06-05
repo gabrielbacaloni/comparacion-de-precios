@@ -278,6 +278,28 @@ app.get('/api/favoritos/:id_usuario', async (req, res) => {
   }
 });
 
+// Endpoint para eliminar favoritos
+app.delete('/api/favoritos', async (req, res) => {
+  const { id_usuario, id_juego } = req.body;
+
+  if (!id_usuario || !id_juego) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  try {
+    const conn = await pool.getConnection();
+    await conn.query(
+      `DELETE FROM favoritos WHERE id_usuario = ? AND id_juego = ?`,
+      [id_usuario, id_juego]
+    );
+    conn.release();
+    res.json({ message: 'Juego eliminado de favoritos' });
+  } catch (err) {
+    console.error("Error al eliminar favorito:", err);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+});
+
 const PORT = 3000;
 
 // Subir imagen de perfil 

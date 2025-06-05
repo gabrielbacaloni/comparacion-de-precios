@@ -28,3 +28,42 @@
     .cards__container {
         margin-bottom: 60px;
     }
+
+
+    .btn-eliminar-fav {
+        position: relative;
+        display: inline-block;
+        padding: 6px 14px;
+        font-weight: bold;
+        background: transparent;
+        border-radius: 5px;
+        text-decoration: none;
+        z-index: 1;
+        overflow: hidden;
+        border: none;
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    .btn-eliminar-fav::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--redGradient);
+        z-index: -1;
+        padding: 2px;
+        border-radius: 5px;
+        mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        -webkit-mask-composite: destination-out;
+    }
+
+    .btn-eliminar-fav:hover {
+        background: linear-gradient(0.25turn, #fdc468, #df4996);
+        color: white;
+    }

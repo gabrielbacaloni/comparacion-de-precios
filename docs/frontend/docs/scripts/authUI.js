@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ---- REFERENCIAS AVATAR Y BOTONES ----
   const avatar = document.getElementById("profile-avatar");
+  const nicknameSpan = document.getElementById("profile-nickname");
+  const profileHeader = document.getElementById("profile-header");
   const menuButton = document.getElementById("menu-button");
   const closeButton = document.getElementById("menu-cerrar");
 
@@ -114,10 +116,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (logueado && avatar) {
       const user = JSON.parse(usuario);
       avatar.src = user.img_perfil || './assets/avatar-default.png';
+      nicknameSpan.textContent = user.nickname || '';
+      profileHeader.style.display = 'flex';
       avatar.style.display = 'inline-block';
       menuButton.style.setProperty('display', 'none', 'important');
       closeButton.style.display = 'none';
     } else if (avatar) {
+       profileHeader.style.display = 'none';
       avatar.style.display = 'none';
       menuButton.style.setProperty('display', 'inline-block', 'important');
       closeButton.style.display = 'none';
@@ -208,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("storage", actualizarMenuSegunSesion);
 
   window.actualizarMenuSegunSesion = actualizarMenuSegunSesion;
-  
+
   window.addEventListener("load", actualizarMenuSegunSesion);
 
   // --- AVATAR CLICK PARA ABRIR MENÚ ---

@@ -16,11 +16,35 @@ const pedirDetalles = (juegoId) => {
     .then((res) => res.json())
     .then((data) => {
       pintarDetalles(data);
+      guardarJuegoEnBD(data);
       obtenerNegocios().then(() => {
         obtenerPrecios(data.name);
       });
       console.log(data.name);
     });
+};
+
+const guardarJuegoEnBD = async (juego) => {
+  const body = {
+    id_juego: juego.id,
+    titulo: juego.name,
+    descripcion: juego.description_raw,
+    imagen_url: juego.background_image,
+    fecha_lanzamiento: juego.released,
+    rating: juego.rating,
+    generos: juego.genres.map(g => g.name),
+    plataformas: juego.platforms.map(p => p.platform.name)
+  };
+
+  try {
+    await fetch('http://localhost:3000/api/juegos/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  } catch (err) {
+    console.error("No se pudo guardar el juego en MySQL:", err);
+  }
 };
 
 //Pintar las cards con los datos obtenidos de la api
@@ -32,9 +56,9 @@ const pintarDetalles = (juego) => {
 
   const plataformas = Array.isArray(juego.platforms)
     ? juego.platforms
-        .filter((p) => p.platform && p.platform.name)
-        .map((p) => p.platform.name)
-        .join(", ")
+      .filter((p) => p.platform && p.platform.name)
+      .map((p) => p.platform.name)
+      .join(", ")
     : "Plataformas no disponibles";
 
   document.querySelector(".juego__plataformas").textContent = plataformas;
@@ -134,9 +158,49 @@ function traducirConLingva(texto, callback) {
 // Ejecutar cuando cargue la página
 document.addEventListener("DOMContentLoaded", () => {
   const id = obtenerIdDeURL();
-  if (id) {
-    pedirDetalles(id);
+  if (id) pedirDetalles(id);
+
+  const btnFavorito = document.getElementById("btn-favorito");
+
+  // Mostrar u ocultar el botón según si el usuario está logueado
+  const usuario = JSON.parse(localStorage.getItem('usuarioGG'));
+  if (usuario) {
+    btnFavorito.style.display = 'inline-block';
   } else {
-    console.error("No se encontró el ID en la URL");
+    btnFavorito.style.display = 'none';
   }
+
+  btnFavorito.addEventListener("click", async () => {
+    const usuario = JSON.parse(localStorage.getItem('usuarioGG'));
+    if (!usuario || !usuario.id) {
+      alert("Tenés que estar logueado para agregar favoritos");
+      return;
+    }
+
+    const idJuego = obtenerIdDeURL();
+
+    try {
+      const resp = await fetch("http://localhost:3000/api/favoritos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_usuario: usuario.id,
+          id_juego: parseInt(idJuego)
+        })
+      });
+
+      const data = await resp.json();
+      if (resp.ok) {
+        alert("✅ Juego agregado a tus favoritos");
+      } else {
+        alert("⚠️ " + (data.error || "No se pudo agregar"));
+      }
+    } catch (err) {
+      alert("❌ Error al conectar con el servidor");
+      console.error(err);
+    }
+  });
 });
+
+
+

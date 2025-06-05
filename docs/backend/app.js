@@ -8,6 +8,7 @@ const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
+const mysql = require('mysql2/promise');
 
 cloudinary.config({
   cloud_name: 'gg-price',
@@ -24,6 +25,13 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root', 
+  password: '12345678', 
+  database: 'bd_ggprice'
+});
 
 // Prueba: endpoint básico
 app.get('/', (req, res) => {
@@ -153,6 +161,120 @@ app.post('/api/usuarios/login', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: 'Error en login' });
+  }
+});
+
+// Endpoint para guardar juegos en cache
+app.post('/api/juegos/guardar', async (req, res) => {
+  const {
+    id_juego,
+    titulo,
+    descripcion,
+    imagen_url,
+    fecha_lanzamiento,
+    rating,
+    generos,
+    plataformas
+  } = req.body;
+
+  if (!id_juego || !titulo) return res.status(400).json({ error: 'Faltan datos obligatorios' });
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // Insertar o actualizar el juego
+    await conn.query(`
+      INSERT INTO juegos (id_juego, titulo, descripcion, imagen_url, fecha_lanzamiento, rating, ultima_actualizacion)
+      VALUES (?, ?, ?, ?, ?, ?, NOW())
+      ON DUPLICATE KEY UPDATE
+        titulo = VALUES(titulo),
+        descripcion = VALUES(descripcion),
+        imagen_url = VALUES(imagen_url),
+        fecha_lanzamiento = VALUES(fecha_lanzamiento),
+        rating = VALUES(rating),
+        ultima_actualizacion = NOW()
+    `, [id_juego, titulo, descripcion, imagen_url, fecha_lanzamiento, rating]);
+
+    // Insertar géneros
+    for (let genero of generos) {
+      const [rows] = await conn.query(`SELECT id_genero FROM generos WHERE nombre = ?`, [genero]);
+      let id_genero;
+      if (rows.length > 0) {
+        id_genero = rows[0].id_genero;
+      } else {
+        const result = await conn.query(`INSERT INTO generos (nombre) VALUES (?)`, [genero]);
+        id_genero = result[0].insertId;
+      }
+      await conn.query(`INSERT IGNORE INTO juego_genero (id_juego, id_genero) VALUES (?, ?)`, [id_juego, id_genero]);
+    }
+
+    // Insertar plataformas
+    for (let plataforma of plataformas) {
+      const [rows] = await conn.query(`SELECT id_plataforma FROM plataformas WHERE nombre = ?`, [plataforma]);
+      let id_plataforma;
+      if (rows.length > 0) {
+        id_plataforma = rows[0].id_plataforma;
+      } else {
+        const result = await conn.query(`INSERT INTO plataformas (nombre) VALUES (?)`, [plataforma]);
+        id_plataforma = result[0].insertId;
+      }
+      await conn.query(`INSERT IGNORE INTO juego_plataforma (id_juego, id_plataforma) VALUES (?, ?)`, [id_juego, id_plataforma]);
+    }
+
+    await conn.commit();
+    res.json({ message: 'Juego guardado correctamente' });
+  } catch (err) {
+    await conn.rollback();
+    console.error(err);
+    res.status(500).json({ error: 'Error al guardar el juego' });
+  } finally {
+    conn.release();
+  }
+});
+
+// Endpoint para guardar juegos en favoritos
+app.post('/api/favoritos', async (req, res) => {
+  const { id_usuario, id_juego } = req.body;
+
+  if (!id_usuario || !id_juego) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  try {
+    const conn = await pool.getConnection();
+    const query = `
+      INSERT IGNORE INTO favoritos (id_usuario, id_juego, fecha_agregado)
+      VALUES (?, ?, NOW())
+    `;
+    await conn.query(query, [id_usuario, id_juego]);
+    conn.release();
+
+    res.json({ message: 'Juego agregado a favoritos' });
+  } catch (err) {
+    console.error("Error al agregar a favoritos:", err);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+});
+
+// Endpoint para obtener favoritos de un usuario
+app.get('/api/favoritos/:id_usuario', async (req, res) => {
+  const id_usuario = req.params.id_usuario;
+
+  try {
+    const conn = await pool.getConnection();
+    const [rows] = await conn.query(`
+      SELECT j.*
+      FROM favoritos f
+      JOIN juegos j ON f.id_juego = j.id_juego
+      WHERE f.id_usuario = ?
+    `, [id_usuario]);
+
+    conn.release();
+    res.json(rows);
+  } catch (err) {
+    console.error("Error al obtener favoritos:", err);
+    res.status(500).json({ error: 'Error en el servidor' });
   }
 });
 

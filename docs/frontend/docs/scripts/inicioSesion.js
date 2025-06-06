@@ -1,22 +1,24 @@
-// Ejecutar cuando cargue la página
 document.addEventListener("DOMContentLoaded", () => {
-  //Funciones reutilizables. Mostrar y ocultar
+  // Funciones reutilizables
   function mostrarElemento(elemento) {
+    if (!elemento) return;
     elemento.style.display = "block";
     elemento.classList.remove("cerrar");
     elemento.classList.add("abrir");
   }
 
   function ocultarElemento(elemento) {
+    if (!elemento) return;
     elemento.classList.remove("abrir");
     elemento.classList.add("cerrar");
     setTimeout(() => {
       elemento.style.display = "none";
-      backdrop.style.display = "none";
+      if (backdrop) backdrop.style.display = "none";
     }, 300);
   }
 
-  // Llamada a los elementos a usar del html
+
+  // Elementos del DOM
   const hamburguesaMenu = document.getElementById("menu-button");
   const cerrarMenu = document.getElementById("menu-cerrar");
   const navMovil = document.getElementById("nav-movil");
@@ -34,180 +36,175 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const backdrop = document.getElementById("modal-backdrop");
 
-  const header = document.querySelector('.header');
+  const header = document.querySelector(".header");
+  const formLogin = document.getElementById("popup--iniciar-sesion");
+  const formRegistro = document.getElementById("popUp__registro");
+
+
+  // Click en el header (para evitar redireccionamiento del logo)
   if (header) {
-    header.addEventListener('click', function (e) {
-      // Si el click fue en el logo, dejamos pasar.
-      if (e.target.closest('.header__logo')) return;
-      // Si el click fue fuera del logo, evitamos que haga algo
+    header.addEventListener("click", (e) => {
+      if (e.target.closest(".header__logo")) return;
       e.preventDefault();
     });
   }
 
-  //Cerrar y abrir el menú
-  hamburguesaMenu.addEventListener("click", () => {
-    if (navMovil.classList.contains("visible")) {
-      // Si ya está abierto, cerralo
+  // Toggle menú hamburguesa
+  if (hamburguesaMenu && cerrarMenu && navMovil) {
+    hamburguesaMenu.addEventListener("click", () => {
+      const abierto = navMovil.classList.contains("visible");
+      navMovil.classList.toggle("visible", !abierto);
+      cerrarMenu.classList.toggle("visible", !abierto);
+      cerrarMenu.classList.toggle("hidden", abierto);
+      hamburguesaMenu.classList.toggle("visible", abierto);
+      hamburguesaMenu.classList.toggle("hidden", !abierto);
+    });
+
+    cerrarMenu.addEventListener("click", () => {
       navMovil.classList.remove("visible");
       cerrarMenu.classList.remove("visible");
       cerrarMenu.classList.add("hidden");
-      hamburguesaMenu.classList.remove("hidden");
       hamburguesaMenu.classList.add("visible");
-    } else {
-      // Si está cerrado, abrilo
-      hamburguesaMenu.classList.add("hidden");
-      cerrarMenu.classList.add("visible");
-      cerrarMenu.classList.remove("hidden");
-      navMovil.classList.add("visible");
-    }
-  });
+      hamburguesaMenu.classList.remove("hidden");
+    });
+  }
 
-  cerrarMenu.addEventListener("click", () => {
-    hamburguesaMenu.classList.remove("hidden");
-    hamburguesaMenu.classList.add("visible");
-    cerrarMenu.classList.remove("visible");
-    cerrarMenu.classList.add("hidden");
-    navMovil.classList.remove("visible");
-  });
+  // Eventos para login y registro (abrir/cerrar popups)
+  if (abrirLogin && popUpContainer) {
+    abrirLogin.addEventListener("click", (e) => {
+      e.preventDefault();
+      backdrop.style.display = "block";
+      mostrarElemento(popUpContainer);
+    });
+  }
 
-  //Abrir la opción de iniciar sesión en movil
-  abrirLogin.addEventListener("click", (e) => {
-    e.preventDefault();
-    backdrop.style.display = "block";
-    mostrarElemento(popUpContainer);
-  });
+  if (cerrarPopup && popUpContainer) {
+    cerrarPopup.addEventListener("click", () => ocultarElemento(popUpContainer));
+  }
 
-  //cerrar iniciar sesion en movil
-  cerrarPopup.addEventListener("click", () => {
-    ocultarElemento(popUpContainer);
-  });
+  if (abrirRegistro && popUpRegistro) {
+    abrirRegistro.addEventListener("click", (e) => {
+      e.preventDefault();
+      backdrop.style.display = "block";
+      mostrarElemento(popUpRegistro);
+    });
+  }
 
-  //abrir la opción de registro en movil
-  abrirRegistro.addEventListener("click", (e) => {
-    e.preventDefault();
-    backdrop.style.display = "block";
-    mostrarElemento(popUpRegistro);
-  });
+  if (cerrarRegistro && popUpRegistro) {
+    cerrarRegistro.addEventListener("click", () => ocultarElemento(popUpRegistro));
+  }
 
-  //cerrar la opcion de registro en movil
-  cerrarRegistro.addEventListener("click", () => {
-    ocultarElemento(popUpRegistro);
-  });
+  if (abrirLoginDesktop && popUpContainer) {
+    abrirLoginDesktop.addEventListener("click", (e) => {
+      e.preventDefault();
+      backdrop.style.display = "block";
+      mostrarElemento(popUpContainer);
+    });
+  }
 
-  // Abrir iniciar sesión desde  desktop
-  abrirLoginDesktop.addEventListener("click", (e) => {
-    e.preventDefault();
-    backdrop.style.display = "block";
-    mostrarElemento(popUpContainer);
-  });
+  if (abrirRegistroDesktop && popUpRegistro) {
+    abrirRegistroDesktop.addEventListener("click", (e) => {
+      e.preventDefault();
+      backdrop.style.display = "block";
+      mostrarElemento(popUpRegistro);
+    });
+  }
 
-  // Abrir registro desde v desktop
-  abrirRegistroDesktop.addEventListener("click", (e) => {
-    e.preventDefault();
-    backdrop.style.display = "block";
-    mostrarElemento(popUpRegistro);
-  });
+  // Click fuera del popup
+  if (backdrop) {
+    backdrop.addEventListener("click", () => {
+      if (popUpContainer?.classList.contains("abrir")) ocultarElemento(popUpContainer);
+      if (popUpRegistro?.classList.contains("abrir")) ocultarElemento(popUpRegistro);
+    });
+  }
 
-  //Al hacer click fuera desaparecen la card de registro o iniciar sesión
-  backdrop.addEventListener("click", () => {
-    if (popUpContainer.classList.contains("abrir")) {
-      ocultarElemento(popUpContainer);
-    }
-    if (popUpRegistro.classList.contains("abrir")) {
-      ocultarElemento(popUpRegistro);
-    }
-  });
-
-  //cerrar el menu si se hace click afuera
+  // Cerrar menú si se hace click fuera de él
   document.addEventListener("click", (e) => {
-    const esClickDentroDelMenu = navMovil.contains(e.target)
-      || hamburguesaMenu.contains(e.target)
-      || (typeof profileAvatar !== "undefined" && profileAvatar.contains(e.target))
-      || (document.getElementById("profile-avatar") && document.getElementById("profile-avatar").contains(e.target));
-    if (!esClickDentroDelMenu && navMovil.classList.contains("visible")) {
+    const profileAvatar = document.getElementById("profile-avatar");
+    const esClickDentroDelMenu =
+      navMovil?.contains(e.target) ||
+      hamburguesaMenu?.contains(e.target) ||
+      profileAvatar?.contains(e.target);
+
+    if (!esClickDentroDelMenu && navMovil?.classList.contains("visible")) {
       navMovil.classList.remove("visible");
-      cerrarMenu.classList.remove("visible");
-      cerrarMenu.classList.add("hidden");
-      hamburguesaMenu.classList.add("visible");
-      hamburguesaMenu.classList.remove("hidden");
+      cerrarMenu?.classList.remove("visible");
+      cerrarMenu?.classList.add("hidden");
+      hamburguesaMenu?.classList.add("visible");
+      hamburguesaMenu?.classList.remove("hidden");
     }
   });
 
-  // ---- REGISTRO DE USUARIO ----
-  const formRegistro = document.getElementById("popUp__registro");
+  // REGISTRO DE USUARIO
   if (formRegistro) {
     formRegistro.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const nickname = document.getElementById('registro__name').value;
-      const mail = document.getElementById('registro__email').value;
-      const password = document.getElementById('login__password--registro').value;
+      const nickname = document.getElementById("registro__name").value;
+      const mail = document.getElementById("registro__email").value;
+      const password = document.getElementById("login__password--registro").value;
 
       try {
-        const resp = await fetch('http://localhost:3000/api/usuarios/registro', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nickname, mail, password })
+        const resp = await fetch("http://localhost:3000/api/usuarios/registro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nickname, mail, password }),
         });
+
         const data = await resp.json();
         if (resp.ok) {
-          alert('Usuario registrado correctamente');
-          // Cerrar popup, limpiar campos
+          alert("Usuario registrado correctamente");
           formRegistro.reset();
           ocultarElemento(popUpRegistro);
           backdrop.style.display = "none";
-          // Loguea automáticamente (llama al login y guarda el usuario en localStorage)
-          try {
-            const loginResp = await fetch('http://localhost:3000/api/usuarios/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ mail, password })
-            });
-            const loginData = await loginResp.json();
-            if (loginResp.ok) {
-              localStorage.setItem('usuarioGG', JSON.stringify(loginData.user));
-              if (window.actualizarMenuSegunSesion) window.actualizarMenuSegunSesion();
-            }
-          } catch (err) {
-            // Silencio, solo no lo loguea si hay error
+
+          // Auto-login
+          const loginResp = await fetch("http://localhost:3000/api/usuarios/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mail, password }),
+          });
+
+          const loginData = await loginResp.json();
+          if (loginResp.ok) {
+            localStorage.setItem("usuarioGG", JSON.stringify(loginData.user));
+            if (window.actualizarMenuSegunSesion) window.actualizarMenuSegunSesion();
           }
         } else {
-          alert(data.error || 'Error al registrar usuario');
+          alert(data.error || "Error al registrar usuario");
         }
-      } catch (error) {
-        alert('Error al conectar con el servidor');
+      } catch {
+        alert("Error al conectar con el servidor");
       }
     });
   }
 
-  // ---- LOGIN DE USUARIO ----
-  const formLogin = document.getElementById("popup--iniciar-sesion");
+  // LOGIN DE USUARIO
   if (formLogin) {
     formLogin.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const mail = document.getElementById('login__email').value;
-      const password = document.getElementById('login__password').value;
+      const mail = document.getElementById("login__email").value;
+      const password = document.getElementById("login__password").value;
 
       try {
-        const resp = await fetch('http://localhost:3000/api/usuarios/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mail, password })
+        const resp = await fetch("http://localhost:3000/api/usuarios/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mail, password }),
         });
+
         const data = await resp.json();
         if (resp.ok) {
-          alert('Bienvenido, ' + data.user.nickname + '!');
-          // Cerrar popup, limpiar campos
+          alert("Bienvenido, " + data.user.nickname + "!");
           formLogin.reset();
           ocultarElemento(popUpContainer);
           backdrop.style.display = "none";
-          // Si querés, guardá datos del usuario en localStorage
-          localStorage.setItem('usuarioGG', JSON.stringify(data.user));
+          localStorage.setItem("usuarioGG", JSON.stringify(data.user));
           if (window.actualizarMenuSegunSesion) window.actualizarMenuSegunSesion();
         } else {
-          alert(data.error || 'Error al iniciar sesión');
+          alert(data.error || "Error al iniciar sesión");
         }
-      } catch (error) {
-        alert('Error al conectar con el servidor');
+      } catch {
+        alert("Error al conectar con el servidor");
       }
     });
   }

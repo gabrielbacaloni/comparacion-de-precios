@@ -1,80 +1,120 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const favoritosContainer = document.getElementById("favoritos-container");
-  const mensajeSinFavoritos = document.getElementById("mensaje-sin-favoritos");
+  const container = document.getElementById("favoritos-container");
+  const mensaje = document.getElementById("mensaje-sin-favoritos");
+  const paginadorArriba = document.createElement("div");
+  const paginadorAbajo = document.createElement("div");
+  paginadorArriba.className = paginadorAbajo.className = "paginador";
+  container.before(paginadorArriba);
+  container.after(paginadorAbajo);
 
   const usuario = JSON.parse(localStorage.getItem("usuarioGG"));
   if (!usuario || !usuario.id) {
-    mensajeSinFavoritos.textContent = "Iniciá sesión para ver tus favoritos.";
-    mensajeSinFavoritos.style.display = "block";
+    mensaje.textContent = "Iniciá sesión para ver tus favoritos.";
+    mensaje.style.display = "block";
     return;
   }
 
-  try {
-    const resp = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}`);
-    const juegos = await resp.json();
+  const favoritosPorPagina = 8;
+  let paginaActual = 1;
 
-    if (!Array.isArray(juegos) || juegos.length === 0) {
-      mensajeSinFavoritos.style.display = "block";
-      return;
-    }
+  const cargarFavoritos = async (pagina) => {
+    container.innerHTML = "";
+    mensaje.style.display = "none";
+    paginadorArriba.innerHTML = "";
+    paginadorAbajo.innerHTML = "";
 
-    mensajeSinFavoritos.style.display = "none";
+    try {
+      const resp = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}?page=${pagina}&limit=${favoritosPorPagina}`);
+      const data = await resp.json();
+      const juegos = data.juegos;
+      const total = data.total;
 
-    juegos.forEach(juego => {
-      const template = document.getElementById("card__template").content.cloneNode(true);
-      template.querySelector(".juego__img").src = juego.imagen_url;
-      template.querySelector(".juego__img").alt = juego.titulo;
-      template.querySelector(".juego__name").textContent = juego.titulo;
-      template.querySelector(".juego__plataformas").textContent = "Plataformas: (consultar)";
-      template.querySelector(".juego__lanzamiento").textContent = "Lanzado: " + (juego.fecha_lanzamiento || "-");
-      template.querySelector(".juego__rating").textContent = `⭐ ${juego.rating || '-'}`;
-      template.querySelector(".juego__generos").textContent = "(sin datos de géneros)";
+      if (!juegos.length) {
+        mensaje.style.display = "block";
+        return;
+      }
 
-      template.querySelector(".card__juego").addEventListener("click", () => {
-        window.location.href = `detalle.html?id=${juego.id_juego}`;
-      });
+      juegos.forEach(juego => {
+        const template = document.getElementById("card__template").content.cloneNode(true);
+        template.querySelector(".juego__img").src = juego.imagen_url;
+        template.querySelector(".juego__name").textContent = juego.titulo;
+        template.querySelector(".juego__plataformas").textContent =
+          "Plataformas: " + (juego.plataformas.length ? juego.plataformas.join(", ") : "(ninguna)");
 
-      const btnEliminar = document.createElement("button");
-      btnEliminar.textContent = "🗑 Quitar";
-      btnEliminar.classList.add("btn-eliminar-fav");
+        const fecha = juego.fecha_lanzamiento
+          ? new Date(juego.fecha_lanzamiento).toLocaleDateString("es-AR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+          })
+          : "-";
+        template.querySelector(".juego__lanzamiento").textContent = "Lanzado: " + fecha;
 
-      btnEliminar.addEventListener("click", async (e) => {
-        e.stopPropagation(); // evita que se dispare el redireccionamiento
+        const rating = parseFloat(juego.rating);
+        template.querySelector(".juego__rating").textContent = isNaN(rating) ? "⭐ -" : `⭐ ${rating.toFixed(2)}`;
+        template.querySelector(".juego__generos").textContent =
+          juego.generos.length ? juego.generos.join(", ") : "(sin géneros)";
 
-        const confirmado = confirm("¿Querés quitar este juego de tus favoritos?");
-        if (!confirmado) return;
+        // Ir al detalle al hacer click
+        template.querySelector(".card__juego").addEventListener("click", () => {
+          window.location.href = `detalle.html?id=${juego.id_juego}`;
+        });
 
-        try {
-          const resp = await fetch("http://localhost:3000/api/favoritos", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id_usuario: usuario.id,
-              id_juego: juego.id_juego
-            })
-          });
+        // Eliminar favorito
+        template.querySelector(".general_btn").addEventListener("click", async (e) => {
+          e.stopPropagation(); // evita que se dispare el evento de redirección
+          const confirmado = confirm("¿Seguro que querés eliminar este juego de tus favoritos?");
+          if (!confirmado) return;
 
-          const data = await resp.json();
-          if (resp.ok) {
-            alert("Favorito eliminado");
-            location.reload(); // o quitá el elemento directamente del DOM
-          } else {
-            alert("Error: " + (data.error || "No se pudo eliminar"));
+          try {
+            const resp = await fetch("http://localhost:3000/api/favoritos", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id_usuario: usuario.id,
+                id_juego: juego.id_juego
+              })
+            });
+
+            if (resp.ok) {
+              alert("Juego eliminado de favoritos");
+              cargarFavoritos(paginaActual);
+            } else {
+              alert("No se pudo eliminar el favorito");
+            }
+          } catch (err) {
+            console.error("Error eliminando favorito:", err);
+            alert("Error de conexión con el servidor");
           }
-        } catch (err) {
-          console.error("Error al eliminar favorito:", err);
-          alert("Error al conectar con el servidor");
-        }
+        });
+
+        container.appendChild(template);
       });
 
-      template.querySelector(".container__juego--info").appendChild(btnEliminar);
 
-      favoritosContainer.appendChild(template);
-    });
+      const totalPaginas = Math.ceil(total / favoritosPorPagina);
+      crearPaginador(paginadorArriba, totalPaginas);
+      crearPaginador(paginadorAbajo, totalPaginas);
 
-  } catch (err) {
-    console.error("Error al cargar favoritos:", err);
-    mensajeSinFavoritos.textContent = "Error al cargar tus favoritos.";
-    mensajeSinFavoritos.style.display = "block";
-  }
+    } catch (err) {
+      console.error("Error al cargar favoritos:", err);
+      mensaje.textContent = "Error al cargar favoritos.";
+      mensaje.style.display = "block";
+    }
+  };
+
+  const crearPaginador = (contenedor, totalPaginas) => {
+    for (let i = 1; i <= totalPaginas; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.className = (i === paginaActual) ? "pagina-activa" : "";
+      btn.addEventListener("click", () => {
+        paginaActual = i;
+        cargarFavoritos(i);
+      });
+      contenedor.appendChild(btn);
+    }
+  };
+
+  cargarFavoritos(paginaActual);
 });

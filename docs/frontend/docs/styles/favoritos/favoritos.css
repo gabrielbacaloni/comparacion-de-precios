@@ -29,41 +29,22 @@
         margin-bottom: 60px;
     }
 
+    .paginador {
+        text-align: center;
+        margin: 20px 0;
+    }
 
-    .btn-eliminar-fav {
-        position: relative;
-        display: inline-block;
-        padding: 6px 14px;
-        font-weight: bold;
-        background: transparent;
-        border-radius: 5px;
-        text-decoration: none;
-        z-index: 1;
-        overflow: hidden;
+    .paginador button {
+        margin: 0 5px;
+        padding: 6px 10px;
         border: none;
-        font-size: 1.2rem;
+        background: #444;
         color: white;
+        border-radius: 4px;
+        cursor: pointer;
     }
 
-    .btn-eliminar-fav::before {
-        content: "";
-        position: absolute;
-        inset: 0;
+    .paginador .pagina-activa {
         background: var(--redGradient);
-        z-index: -1;
-        padding: 2px;
-        border-radius: 5px;
-        mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        mask-composite: exclude;
-        -webkit-mask-composite: destination-out;
-    }
-
-    .btn-eliminar-fav:hover {
-        background: linear-gradient(0.25turn, #fdc468, #df4996);
-        color: white;
+        font-weight: bold;
     }

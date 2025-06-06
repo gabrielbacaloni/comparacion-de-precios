@@ -1,16 +1,16 @@
-.cards{
+.cards {
     width: 80%;
     margin: 60px auto;
     cursor: pointer;
 }
 
-.cards__container{
+.cards__container {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));;
     grid-gap: 20px;
 }
 
-.card__juego{
+.card__juego {
     position: relative;
     border-radius: 10px;
     margin-top: 20px;
@@ -20,16 +20,20 @@
     background-image: linear-gradient(#1f1f1f, #1f1f1f), var(--redGradient);
     background-origin: border-box;
     background-clip: padding-box, border-box;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
 .card__juego:hover {
     transform: scale(1.02);
-  }
-  
+}
 
-.juego__img{
+
+.juego__img {
     width: 100%;
     height: 200px;
     object-position: center;
@@ -38,24 +42,35 @@
     border-radius: 5px;
 }
 
-.container__juego--info{
+.container__juego--info {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
+    flex: 1;
     align-items: center;
 }
-.juego__name{
+
+.juego__name {
     text-align: center;
     font-size: 1.2rem;
     font-weight: bold;
     margin: 10px 0px;
 }
-.juego__plataformas, .juego__lanzamiento, .juego__rating, .juego__generos{
+
+.juego__plataformas,
+.juego__lanzamiento,
+.juego__rating,
+.juego__generos {
     font-size: 0.9rem;
     margin: 4px 0px;
 }
 
 .juego__rating {
     color: gold;
-  }
- 
+}
+
+.cargar-mas-container {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}

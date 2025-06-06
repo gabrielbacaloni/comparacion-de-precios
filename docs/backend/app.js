@@ -9,11 +9,13 @@ const serviceAccount = require('./serviceAccountKey.json');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const mysql = require('mysql2/promise');
+const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 cloudinary.config({
-  cloud_name: 'gg-price',
-  api_key: '647523598588644',
-  api_secret: 'DGiq7ony223fmMMIjhreKRUa4jc'
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
 });
 
 const app = express();
@@ -27,10 +29,10 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root', 
-  password: '12345678', 
-  database: 'bd_ggprice'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
 // Prueba: endpoint básico
@@ -53,12 +55,13 @@ app.get('/api/usuarios', async (req, res) => {
 
 // Endpoint para buscar juegos en RAWG
 app.get('/api/juegos', async (req, res) => {
-  const { search, ordering, page_size } = req.query;
-  const API_KEY = "4b1742eb29634e329d7fd29447d706ca";
+  const { search, ordering, page_size, page } = req.query;
+  const API_KEY = process.env.RAWG_API_KEY;
   let url = `https://api.rawg.io/api/games?key=${API_KEY}`;
   if (search) url += `&search=${encodeURIComponent(search)}`;
   if (ordering) url += `&ordering=${ordering}`;
   if (page_size) url += `&page_size=${page_size}`;
+  if (page) url += `&page=${page}`;
 
   try {
     const response = await fetch(url);
@@ -72,7 +75,7 @@ app.get('/api/juegos', async (req, res) => {
 // Endpoint para detalles de un juego por ID
 app.get('/api/juegos/:id', async (req, res) => {
   const { id } = req.params;
-  const API_KEY = "4b1742eb29634e329d7fd29447d706ca";
+  const API_KEY = process.env.RAWG_API_KEY;
   const url = `https://api.rawg.io/api/games/${id}?key=${API_KEY}`;
 
   try {
@@ -122,10 +125,11 @@ app.post('/api/usuarios/registro', async (req, res) => {
       return res.status(400).json({ error: 'El mail ya está registrado' });
     }
     // Crear usuario
+    const hashedPassword = await bcrypt.hash(password, 10);
     const usuarioNuevo = {
       nickname,
       mail,
-      password, //password en texto plano (agregar mejor seguridad)
+      password: hashedPassword,
       img_perfil: img_perfil || ''
     };
     const docRef = await db.collection('usuarios').add(usuarioNuevo);
@@ -142,14 +146,17 @@ app.post('/api/usuarios/login', async (req, res) => {
     return res.status(400).json({ error: 'Faltan datos' });
   }
   try {
-    const query = await db.collection('usuarios')
-      .where('mail', '==', mail)
-      .where('password', '==', password)
-      .get();
+    const query = await db.collection('usuarios').where('mail', '==', mail).get();
     if (query.empty) {
       return res.status(401).json({ error: 'Mail o contraseña incorrectos' });
     }
-    const userData = query.docs[0].data();
+    const userDoc = query.docs[0];
+    const userData = userDoc.data();
+    const coincide = await bcrypt.compare(password, userData.password);
+
+    if (!coincide) {
+      return res.status(401).json({ error: 'Mail o contraseña incorrectos' });
+    }
     res.json({
       message: 'Login correcto',
       user: {
@@ -260,18 +267,52 @@ app.post('/api/favoritos', async (req, res) => {
 // Endpoint para obtener favoritos de un usuario
 app.get('/api/favoritos/:id_usuario', async (req, res) => {
   const id_usuario = req.params.id_usuario;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 8;
+  const offset = (page - 1) * limit;
 
   try {
     const conn = await pool.getConnection();
-    const [rows] = await conn.query(`
-      SELECT j.*
-      FROM favoritos f
-      JOIN juegos j ON f.id_juego = j.id_juego
-      WHERE f.id_usuario = ?
-    `, [id_usuario]);
+
+    // Obtener total de favoritos
+    const [countRows] = await conn.query(
+      `SELECT COUNT(*) AS total FROM favoritos WHERE id_usuario = ?`,
+      [id_usuario]
+    );
+    const total = countRows[0].total;
+
+    // Obtener juegos favoritos paginados
+    const [juegos] = await conn.query(
+      `SELECT j.*
+       FROM favoritos f
+       JOIN juegos j ON f.id_juego = j.id_juego
+       WHERE f.id_usuario = ?
+       ORDER BY f.fecha_agregado DESC
+       LIMIT ? OFFSET ?`,
+      [id_usuario, limit, offset]
+    );
+
+    // Por cada juego, buscar sus plataformas y géneros
+    for (const juego of juegos) {
+      const [plataformas] = await conn.query(
+        `SELECT p.nombre FROM juego_plataforma jp
+         JOIN plataformas p ON jp.id_plataforma = p.id_plataforma
+         WHERE jp.id_juego = ?`,
+        [juego.id_juego]
+      );
+      juego.plataformas = plataformas.map(p => p.nombre);
+
+      const [generos] = await conn.query(
+        `SELECT g.nombre FROM juego_genero jg
+         JOIN generos g ON jg.id_genero = g.id_genero
+         WHERE jg.id_juego = ?`,
+        [juego.id_juego]
+      );
+      juego.generos = generos.map(g => g.nombre);
+    }
 
     conn.release();
-    res.json(rows);
+    res.json({ juegos, total });
   } catch (err) {
     console.error("Error al obtener favoritos:", err);
     res.status(500).json({ error: 'Error en el servidor' });
@@ -300,7 +341,7 @@ app.delete('/api/favoritos', async (req, res) => {
   }
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Subir imagen de perfil 
 app.post('/api/usuarios/:id/subir-foto', upload.single('foto'), async (req, res) => {

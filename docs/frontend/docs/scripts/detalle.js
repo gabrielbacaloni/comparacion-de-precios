@@ -104,7 +104,6 @@ const obtenerPrecios = (nombreJuego) => {
 
 //Pintar los precios
 const pintarPrecios = (precios) => {
-  //Para poder completar el titulo con el precio normal
   if (precios.length > 0) {
     const titulo = document.querySelector(".precios__titulo");
     titulo.textContent = `Precio normal: $${precios[0].normalPrice}`;
@@ -134,7 +133,7 @@ const pintarPrecios = (precios) => {
     }
 
     clone.querySelector(
-      ".precio__boton"
+      ".general_btn"
     ).href = `https://www.cheapshark.com/redirect?dealID=${precio.dealID}`;
 
     fragment.appendChild(clone);
@@ -176,9 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const verificarFavorito = async () => {
     try {
       const resp = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}`);
-      const favoritos = await resp.json();
+      const data = await resp.json();
+      const favoritos = data.juegos; 
+
       estaEnFavoritos = favoritos.some(j => j.id_juego == id);
-      btnFavorito.textContent = estaEnFavoritos ? "🗑 Eliminar de Favoritos" : "❤️ Agregar a Favoritos";
+      btnFavorito.textContent = estaEnFavoritos ? "Eliminar de Favoritos" : "Agregar a Favoritos";
     } catch (err) {
       console.error("Error al verificar favoritos:", err);
     }
@@ -204,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (resp.ok) {
           alert("❌ Juego eliminado de favoritos");
           estaEnFavoritos = false;
-          btnFavorito.textContent = "❤️ Agregar a Favoritos";
+          btnFavorito.textContent = "Agregar a Favoritos";
         } else {
           alert("No se pudo eliminar");
         }
@@ -222,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (resp.ok) {
           alert("✅ Juego agregado a favoritos");
           estaEnFavoritos = true;
-          btnFavorito.textContent = "🗑 Eliminar de Favoritos";
+          btnFavorito.textContent = "Eliminar de Favoritos";
         } else {
           const data = await resp.json();
           alert("No se pudo agregar: " + (data.error || ""));

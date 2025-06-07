@@ -11,7 +11,7 @@ const buscarJuego = (nombre, orden = "relevancia") => {
   else if (orden === "fecha_asc") ordering = "released";
 
   fetch(
-    `http://localhost:3000/api/juegos?search=${encodeURIComponent(nombre)}${ordering ? `&ordering=${ordering}` : ""}&page_size=20`
+    `${API_URL}/api/juegos?search=${encodeURIComponent(nombre)}${ordering ? `&ordering=${ordering}` : ""}&page_size=20`
   )
     .then((res) => res.json())
     .then((data) => {

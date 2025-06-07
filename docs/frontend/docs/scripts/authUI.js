@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const formData = new FormData();
     formData.append('foto', file);
 
-    const resp = await fetch(`http://localhost:3000/api/usuarios/${userId}/subir-foto`, {
+    const resp = await fetch(`${API_URL}/api/usuarios/${userId}/subir-foto`, {
       method: 'POST',
       body: formData
     });

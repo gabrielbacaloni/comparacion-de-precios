@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("login__password--registro").value;
 
       try {
-        const resp = await fetch("http://localhost:3000/api/usuarios/registro", {
+        const resp = await fetch(`${API_URL}/api/usuarios/registro`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ nickname, mail, password }),
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
           backdrop.style.display = "none";
 
           // Auto-login
-          const loginResp = await fetch("http://localhost:3000/api/usuarios/login", {
+          const loginResp = await fetch(`${API_URL}/api/usuarios/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mail, password }),
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("login__password").value;
 
       try {
-        const resp = await fetch("http://localhost:3000/api/usuarios/login", {
+        const resp = await fetch(`${API_URL}/api/usuarios/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ mail, password }),

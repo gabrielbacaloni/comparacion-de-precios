@@ -2,8 +2,8 @@ const API_KEY = "4b1742eb29634e329d7fd29447d706ca";
 const cardTempl = document.getElementById("template-precio").content;
 const fragment = document.createDocumentFragment();
 const listTarjetas = document.querySelector(".precios__lista");
-let tiendasPorId = {};
 
+let tiendasPorId = {};
 // Obtener el ID de la URL
 const obtenerIdDeURL = () => {
   const params = new URLSearchParams(window.location.search);
@@ -12,7 +12,7 @@ const obtenerIdDeURL = () => {
 
 //Conectar con la api rawg para pedir mas detalles
 const pedirDetalles = (juegoId) => {
-  fetch(`http://localhost:3000/api/juegos/${juegoId}`)
+  fetch(`${API_URL}/api/juegos/${juegoId}`)
     .then((res) => res.json())
     .then((data) => {
       pintarDetalles(data);
@@ -37,7 +37,7 @@ const guardarJuegoEnBD = async (juego) => {
   };
 
   try {
-    await fetch('http://localhost:3000/api/juegos/guardar', {
+    await fetch(`${API_URL}/api/juegos/guardar`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -77,7 +77,7 @@ const pintarDetalles = (juego) => {
 
 //Diferencias las tiendas que venden el videojuego
 const obtenerNegocios = () => {
-  return fetch('http://localhost:3000/api/tiendas')
+  return fetch(`${API_URL}/api/tiendas`)
     .then((res) => {
       return res.json();
     })
@@ -93,9 +93,7 @@ const obtenerNegocios = () => {
 
 //Pedir a la api los precios
 const obtenerPrecios = (nombreJuego) => {
-  fetch(
-    `http://localhost:3000/api/precios?title=${encodeURIComponent(nombreJuego)}`
-  )
+  fetch(`${API_URL}/api/precios?title=${encodeURIComponent(nombreJuego)}`)
     .then((res) => res.json())
     .then((data) => {
       pintarPrecios(data);
@@ -112,6 +110,7 @@ const pintarPrecios = (precios) => {
       "No se encontraron precios.";
     return;
   }
+  precios.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
   const precioNormal = parseFloat(precios[0].normalPrice);
 
   precios.forEach((precio) => {
@@ -143,13 +142,11 @@ const pintarPrecios = (precios) => {
 };
 
 function traducirConLingva(texto, callback) {
-  fetch(`https://lingva.ml/api/v1/en/es/${encodeURIComponent(texto)}`)
+  fetch(`${API_URL}/api/traducir?texto=${encodeURIComponent(texto)}`)
     .then((res) => res.json())
-    .then((data) => {
-      callback(data.translation);
-    })
+    .then((data) => callback(data.translation))
     .catch((error) => {
-      console.error("Error con Lingva:", error);
+      console.error("Error con traducción:", error);
       callback("Error al traducir.");
     });
 }
@@ -174,9 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const verificarFavorito = async () => {
     try {
-      const resp = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}`);
+      const resp = await fetch(`${API_URL}/api/favoritos/${usuario.id}`);
       const data = await resp.json();
-      const favoritos = data.juegos; 
+      const favoritos = data.juegos;
 
       estaEnFavoritos = favoritos.some(j => j.id_juego == id);
       btnFavorito.textContent = estaEnFavoritos ? "Eliminar de Favoritos" : "Agregar a Favoritos";
@@ -193,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const confirmado = confirm("¿Seguro que querés eliminar este juego de tus favoritos?");
         if (!confirmado) return;
 
-        const resp = await fetch("http://localhost:3000/api/favoritos", {
+        const resp = await fetch(`${API_URL}/api/favoritos`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -211,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
       } else {
-        const resp = await fetch("http://localhost:3000/api/favoritos", {
+        const resp = await fetch(`${API_URL}/api/favoritos`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

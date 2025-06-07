@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /*Llamada a la api para traer los juegos populares*/
 const listarJuegosPopulares = () => {
   console.log("Cargando página:", paginaActual);
-  fetch(`http://localhost:3000/api/juegos?ordering=-rating&page_size=${juegosPorPagina}&page=${paginaActual}`)
+  fetch(`${API_URL}/api/juegos?ordering=-rating&page_size=${juegosPorPagina}&page=${paginaActual}`)
     .then((res) => res.json())
     .then((data) => {
       const juegos = data.results;

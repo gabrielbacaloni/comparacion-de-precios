@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     paginadorAbajo.innerHTML = "";
 
     try {
-      const resp = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}?page=${pagina}&limit=${favoritosPorPagina}`);
+      const resp = await fetch(`${API_URL}/api/favoritos/${usuario.id}?page=${pagina}&limit=${favoritosPorPagina}`);
       const data = await resp.json();
       const juegos = data.juegos;
       const total = data.total;
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (!confirmado) return;
 
           try {
-            const resp = await fetch("http://localhost:3000/api/favoritos", {
+            const resp = await fetch(`${API_URL}/api/favoritos`, {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({

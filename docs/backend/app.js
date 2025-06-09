@@ -465,7 +465,7 @@ app.post('/api/usuarios/resetear', async (req, res) => {
   }
 
   try {
-    const hashed = await bcrypt.hash(nuevaPassword, 10);
+    const hashed = await bcrypt.hash(nuevaPassword, 8);
     await db.collection('usuarios').doc(info.userId).update({ password: hashed });
 
     tokensReset.delete(token);
@@ -476,6 +476,16 @@ app.post('/api/usuarios/resetear', async (req, res) => {
     res.status(500).json({ error: 'Error al actualizar contraseña' });
   }
 });
+
+app.get('/api/usuarios/validar-token', (req, res) => {
+  const { token } = req.query;
+  const info = tokensReset.get(token);
+  if (!info || Date.now() > info.expires) {
+    return res.status(400).json({ error: 'Token inválido o expirado' });
+  }
+  res.json({ message: 'Token válido' });
+});
+
 
 
 app.listen(PORT, () => {

@@ -16,11 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Verificar con el backend si el token sigue siendo válido (petición vacía)
   try {
-    const resp = await fetch(`${API_URL}/api/usuarios/resetear`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, nuevaPassword: "___dummy" }) // fuerza el error de expirado sin guardar
-    });
+    const resp = await fetch(`${API_URL}/api/usuarios/validar-token?token=${token}`);
 
     if (!resp.ok) {
       const data = await resp.json();

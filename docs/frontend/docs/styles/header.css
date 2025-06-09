@@ -7,9 +7,7 @@
   position: fixed;
   top: 0;
   z-index: 2;
-  /*box-shadow: 0 4px 8px 0 var(--azulRgbaSuave);*/
   background: var(--background);
-
 }
 
 .header__logo {

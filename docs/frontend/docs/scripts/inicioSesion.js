@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Funciones reutilizables
+  //funciones reutilizables
   function mostrarElemento(elemento) {
     if (!elemento) return;
     elemento.style.display = "block";
@@ -17,8 +17,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   }
 
+  function mostrarPopup(popup) {
+    if (!popup) return;
+    backdrop.style.display = "block";
+    mostrarElemento(popup);
+  }
 
-  // Elementos del DOM
+  //elementos del DOM
   const hamburguesaMenu = document.getElementById("menu-button");
   const cerrarMenu = document.getElementById("menu-cerrar");
   const navMovil = document.getElementById("nav-movil");
@@ -34,14 +39,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const abrirLoginDesktop = document.getElementById("nav__abrir-login-desktop");
   const abrirRegistroDesktop = document.getElementById("nav__abrir-singup-desktop");
 
-  const backdrop = document.getElementById("modal-backdrop");
+  const linkOlvido = document.getElementById("link__olvido-password");
+  const popupRecuperar = document.getElementById("container__recuperar");
+  const cerrarRecuperar = document.getElementById("popUp__cerrar-recuperar");
 
+  const backdrop = document.getElementById("modal-backdrop");
   const header = document.querySelector(".header");
   const formLogin = document.getElementById("popup--iniciar-sesion");
   const formRegistro = document.getElementById("popUp__registro");
+  const formRecuperar = document.getElementById("form__recuperar");
 
-
-  // Click en el header (para evitar redireccionamiento del logo)
+  //evitar redireccionamiento en header
   if (header) {
     header.addEventListener("click", (e) => {
       if (e.target.closest(".header__logo")) return;
@@ -49,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Toggle menú hamburguesa
+  //toggle menu hamburguesa
   if (hamburguesaMenu && cerrarMenu && navMovil) {
     hamburguesaMenu.addEventListener("click", () => {
       const abierto = navMovil.classList.contains("visible");
@@ -69,56 +77,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Eventos para login y registro (abrir/cerrar popups)
-  if (abrirLogin && popUpContainer) {
-    abrirLogin.addEventListener("click", (e) => {
-      e.preventDefault();
-      backdrop.style.display = "block";
-      mostrarElemento(popUpContainer);
-    });
-  }
+  //abrir, cerrar popups
+  if (abrirLogin) abrirLogin.addEventListener("click", e => (e.preventDefault(), mostrarPopup(popUpContainer)));
+  if (abrirRegistro) abrirRegistro.addEventListener("click", e => (e.preventDefault(), mostrarPopup(popUpRegistro)));
+  if (abrirLoginDesktop) abrirLoginDesktop.addEventListener("click", e => (e.preventDefault(), mostrarPopup(popUpContainer)));
+  if (abrirRegistroDesktop) abrirRegistroDesktop.addEventListener("click", e => (e.preventDefault(), mostrarPopup(popUpRegistro)));
 
-  if (cerrarPopup && popUpContainer) {
-    cerrarPopup.addEventListener("click", () => ocultarElemento(popUpContainer));
-  }
+  if (cerrarPopup) cerrarPopup.addEventListener("click", () => ocultarElemento(popUpContainer));
+  if (cerrarRegistro) cerrarRegistro.addEventListener("click", () => ocultarElemento(popUpRegistro));
+  if (cerrarRecuperar) cerrarRecuperar.addEventListener("click", () => ocultarElemento(popupRecuperar));
 
-  if (abrirRegistro && popUpRegistro) {
-    abrirRegistro.addEventListener("click", (e) => {
-      e.preventDefault();
-      backdrop.style.display = "block";
-      mostrarElemento(popUpRegistro);
-    });
-  }
-
-  if (cerrarRegistro && popUpRegistro) {
-    cerrarRegistro.addEventListener("click", () => ocultarElemento(popUpRegistro));
-  }
-
-  if (abrirLoginDesktop && popUpContainer) {
-    abrirLoginDesktop.addEventListener("click", (e) => {
-      e.preventDefault();
-      backdrop.style.display = "block";
-      mostrarElemento(popUpContainer);
-    });
-  }
-
-  if (abrirRegistroDesktop && popUpRegistro) {
-    abrirRegistroDesktop.addEventListener("click", (e) => {
-      e.preventDefault();
-      backdrop.style.display = "block";
-      mostrarElemento(popUpRegistro);
-    });
-  }
-
-  // Click fuera del popup
+  //clicks fuera de los pop ups
   if (backdrop) {
     backdrop.addEventListener("click", () => {
       if (popUpContainer?.classList.contains("abrir")) ocultarElemento(popUpContainer);
       if (popUpRegistro?.classList.contains("abrir")) ocultarElemento(popUpRegistro);
+      if (popupRecuperar?.classList.contains("abrir")) ocultarElemento(popupRecuperar);
     });
   }
 
-  // Cerrar menú si se hace click fuera de él
   document.addEventListener("click", (e) => {
     const profileAvatar = document.getElementById("profile-avatar");
     const esClickDentroDelMenu =
@@ -135,13 +112,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // REGISTRO DE USUARIO
+  //registro de usuarios
   if (formRegistro) {
     formRegistro.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const nickname = document.getElementById("registro__name").value;
-      const mail = document.getElementById("registro__email").value;
+      const nickname = document.getElementById("registro__name").value.trim();
+      const mail = document.getElementById("registro__email").value.trim().toLowerCase();
       const password = document.getElementById("login__password--registro").value;
+
+      if (!nickname || !mail || !password) {
+        alert("Todos los campos son obligatorios.");
+        return;
+      }
+
+      if (password.length < 8) {
+        alert("La contraseña debe tener al menos 8 caracteres.");
+        return;
+      }
 
       try {
         const resp = await fetch(`${API_URL}/api/usuarios/registro`, {
@@ -157,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
           ocultarElemento(popUpRegistro);
           backdrop.style.display = "none";
 
-          // Auto-login
           const loginResp = await fetch(`${API_URL}/api/usuarios/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -178,11 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // LOGIN DE USUARIO
+  //login de usuarios
   if (formLogin) {
     formLogin.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const mail = document.getElementById("login__email").value;
+      const mail = document.getElementById("login__email").value.trim().toLowerCase();
       const password = document.getElementById("login__password").value;
 
       try {
@@ -194,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await resp.json();
         if (resp.ok) {
-          alert("Bienvenido, " + data.user.nickname + "!");
+          alert("Bienvenido/a, " + data.user.nickname + "!");
           formLogin.reset();
           ocultarElemento(popUpContainer);
           backdrop.style.display = "none";
@@ -205,6 +191,40 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch {
         alert("Error al conectar con el servidor");
+      }
+    });
+  }
+
+  if (linkOlvido && popupRecuperar) {
+    linkOlvido.addEventListener("click", (e) => {
+      e.preventDefault();
+      ocultarElemento(popUpContainer);
+      mostrarPopup(popupRecuperar);
+    });
+  }
+
+  if (formRecuperar) {
+    formRecuperar.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const email = document.getElementById("recuperar__email").value.trim().toLowerCase();
+
+      try {
+        const resp = await fetch(`${API_URL}/api/usuarios/recuperar`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mail: email })
+        });
+
+        const data = await resp.json();
+        alert(data.message || data.error);
+
+        if (resp.ok) {
+          formRecuperar.reset();
+          ocultarElemento(popupRecuperar);
+          backdrop.style.display = "none";
+        }
+      } catch {
+        alert("Error al contactar con el servidor");
       }
     });
   }

@@ -127,6 +127,10 @@
                     placeholder="contraseña">
             </label>
             <button class="login__btn">Ingresar</button>
+            <p style="margin-top: 10px;">
+                <a href="#" id="link__olvido-password" style="color: #333; font-size: 0.9rem;">¿Olvidaste tu
+                    contraseña?</a>
+            </p>
         </form>
     </div>
 
@@ -150,8 +154,21 @@
         </form>
     </div>
 
+    <!--Card para Recuperar Contraseña-->
+    <div class="popUp__Container" id="container__recuperar">
+        <i class="fas fa-times" id="popUp__cerrar-recuperar"></i>
+        <h2 class="popUp__title">Recuperar contraseña</h2>
+        <form class="popUp__form" id="form__recuperar">
+            <label>
+                <input id="recuperar__email" type="email" class="popUp__form--input" placeholder="Ingresá tu email">
+            </label>
+            <button class="login__btn">Enviar enlace</button>
+        </form>
+    </div>
+
+
     <div id="modal-backdrop"></div>
-    
+
     <script src="./scripts/config.js"></script>
     <script src="https://kit.fontawesome.com/d9e2ae4403.js" crossorigin="anonymous"></script>
     <script src="./scripts/index.js"></script>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GG Price</title>
+    <title>Detalles - GG Price</title>
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/header.css">
@@ -83,6 +83,7 @@
         </template>
 
     </main>
+
     <!--Card para iniciar sesión-->
     <div class="popUp__Container" id="container__iniciar-sesion">
         <i class=" fas fa-times" id="popUp__cerrar"></i>
@@ -97,6 +98,10 @@
                     placeholder="contraseña">
             </label>
             <button class="login__btn">Ingresar</button>
+            <p style="margin-top: 10px;">
+                <a href="#" id="link__olvido-password" style="color: #333; font-size: 0.9rem;">¿Olvidaste tu
+                    contraseña?</a>
+            </p>
         </form>
     </div>
 
@@ -113,6 +118,18 @@
                 <input id="registro__email" name="email" type="email" class="popUp__form--input"
                     placeholder="email"></label>
             <button class="registro__btn">Registrarse</button>
+        </form>
+    </div>
+
+    <!--Card para Recuperar Contraseña-->
+    <div class="popUp__Container" id="container__recuperar">
+        <i class="fas fa-times" id="popUp__cerrar-recuperar"></i>
+        <h2 class="popUp__title">Recuperar contraseña</h2>
+        <form class="popUp__form" id="form__recuperar">
+            <label>
+                <input id="recuperar__email" type="email" class="popUp__form--input" placeholder="Ingresá tu email">
+            </label>
+            <button class="login__btn">Enviar enlace</button>
         </form>
     </div>
 

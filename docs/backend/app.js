@@ -10,7 +10,10 @@ const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 require('dotenv').config();
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -19,6 +22,10 @@ cloudinary.config({
 });
 
 const app = express();
+
+const path = require("path");
+app.use(express.static(path.join(__dirname, "../frontend/docs")));
+
 app.use(cors());
 app.use(express.json());
 
@@ -118,9 +125,13 @@ app.post('/api/usuarios/registro', async (req, res) => {
   if (!nickname || !mail || !password) {
     return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
+  const normalizedMail = mail.trim().toLowerCase();
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
+  }
   try {
     // ¿Usuario ya existe?
-    const usuarioExistente = await db.collection('usuarios').where('mail', '==', mail).get();
+    const usuarioExistente = await db.collection('usuarios').where('mail', '==', normalizedMail).get();
     if (!usuarioExistente.empty) {
       return res.status(400).json({ error: 'El mail ya está registrado' });
     }
@@ -128,7 +139,7 @@ app.post('/api/usuarios/registro', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const usuarioNuevo = {
       nickname,
-      mail,
+      mail:normalizedMail,
       password: hashedPassword,
       img_perfil: img_perfil || ''
     };
@@ -142,11 +153,12 @@ app.post('/api/usuarios/registro', async (req, res) => {
 // Endpoint para login de usuario
 app.post('/api/usuarios/login', async (req, res) => {
   const { mail, password } = req.body;
+  const normalizedMail = mail.trim().toLowerCase();
   if (!mail || !password) {
     return res.status(400).json({ error: 'Faltan datos' });
   }
   try {
-    const query = await db.collection('usuarios').where('mail', '==', mail).get();
+    const query = await db.collection('usuarios').where('mail', '==', normalizedMail).get();
     if (query.empty) {
       return res.status(401).json({ error: 'Mail o contraseña incorrectos' });
     }
@@ -388,6 +400,83 @@ app.get('/api/traducir', async (req, res) => {
     res.status(500).json({ error: 'Error al traducir con Lingva' });
   }
 });
+
+const tokensReset = new Map();
+
+// Endpoint para recuperar contraseña
+app.post('/api/usuarios/recuperar', async (req, res) => {
+  const { mail } = req.body;
+  const normalizedMail = mail.trim().toLowerCase();
+  if (!mail) return res.status(400).json({ error: 'Falta el mail' });
+
+  try {
+    const query = await db.collection('usuarios').where('mail', '==', normalizedMail).get();
+    if (query.empty) return res.status(404).json({ error: 'Mail no registrado' });
+
+    const userDoc = query.docs[0];
+    const userId = userDoc.id;
+
+    // Crear token aleatorio
+    const token = crypto.randomBytes(32).toString("hex");
+
+    // Guardar en memoria por 15 minutos
+    tokensReset.set(token, { userId, expires: Date.now() + 15 * 60 * 1000 });
+
+    // Crear link
+    const url = `http://localhost:3000/resetear.html?token=${token}`; // Reemplazá con tu dominio si es necesario
+
+    // Configurar el transporter
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    console.log("➡️ Enviando mail a:", mail);
+    console.log("🔗 Enlace de reseteo:", url);
+
+    await transporter.sendMail({
+      from: `"GGPRICE" <${process.env.MAIL_USER}>`,
+      to: mail,
+      subject: "Reseteá tu contraseña - GGPRICE",
+      html: `<p>Hiciste una solicitud para recuperar tu contraseña.</p>
+             <p><a href="${url}">Haz clic acá para resetearla</a> (válido por 15 minutos)</p>`
+    });
+
+    res.json({ message: "📧 Se envió un enlace a tu email para resetear tu contraseña" });
+
+  } catch (error) {
+    console.error("Error en recuperación:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+// Endpoint para resetear contraseña
+app.post('/api/usuarios/resetear', async (req, res) => {
+  const { token, nuevaPassword } = req.body;
+  if (!token || !nuevaPassword) return res.status(400).json({ error: 'Faltan datos' });
+
+  const info = tokensReset.get(token);
+
+  if (!info || Date.now() > info.expires) {
+    return res.status(400).json({ error: 'El enlace expiró o es inválido' });
+  }
+
+  try {
+    const hashed = await bcrypt.hash(nuevaPassword, 10);
+    await db.collection('usuarios').doc(info.userId).update({ password: hashed });
+
+    tokensReset.delete(token);
+
+    res.json({ message: '✅ Contraseña actualizada correctamente' });
+  } catch (err) {
+    console.error("Error al actualizar contraseña:", err);
+    res.status(500).json({ error: 'Error al actualizar contraseña' });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Servidor GGPRICE escuchando en http://localhost:${PORT}`);
